@@ -7,7 +7,7 @@ from langchain_core.tools import Tool
 try:
     from langchain_community.tools import DuckDuckGoSearchRun
 except Exception:  # pragma: no cover - optional dependency
-    DuckDuckGoSearchRun = None  # type: ignore[misc]
+    DuckDuckGoSearchRun = None  # type: ignore[misc, assignment]
 
 
 def _dummy_search(query: str) -> str:
