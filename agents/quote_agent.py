@@ -7,16 +7,19 @@ import json
 from typing import Any, Dict, Callable
 
 from modular_ai_agent.agents.base_agent import get_llm, tools
+
 from logic.pricing_rules import calculate_price
+from logic.job_parser import parse_prompt
 
 
 def build_quote_agent() -> Callable[[str], str]:
     # For now, just a passthrough using pricing_rules and tools
     llm = get_llm()
 
+
     def agent(prompt: str) -> str:
-        # Simulate prompt parsing; hardcoded scope for now
-        scope = {"service": "window", "qty": 20, "size": "large", "surcharges": {}}
+        # Parse the prompt into a scope dict
+        scope = parse_prompt(prompt)
         customer = "Test Customer"
         pricing = calculate_price(scope)
         result = {
