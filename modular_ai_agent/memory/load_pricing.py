@@ -56,7 +56,7 @@ def ingest(csv_path: str, store_path: str = "memory/vector_store") -> int:
 
     if added:
         vs.add_documents(added)
-        vs.save_local(str(Path(store_path)))
+        vs.save_local(store_path)
     print(f"✅  Ingested {len(added)} pricing records into {store_path}")
     return len(added)
 
