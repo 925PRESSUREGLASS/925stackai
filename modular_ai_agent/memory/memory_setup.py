@@ -53,8 +53,10 @@ def as_retriever(store: FAISS, *, k: int = 4):
     return store.as_retriever(search_kwargs={"k": k})
 
 
-def get_retriever(path: str | Path = "memory/vector_store", *, k: int = 4):
+def get_retriever(path: str | Path | None = None, *, k: int = 4):
     """Convenience wrapper to load a vector store and return its retriever."""
+    if path is None:
+        path = Path(os.getenv("VECTOR_STORE_PATH", "memory/vector_store"))
     store = get_vectorstore(path)
     if not store.index_to_docstore_id:
         store.add_documents([Document(page_content="hello world")])
