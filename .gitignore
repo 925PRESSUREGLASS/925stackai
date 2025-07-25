@@ -1,0 +1,8 @@
+# Byte-compiled / virtual-env / editor stuff
+__pycache__/
+.env
+.venv/
+*.py[cod]
+*.sqlite3
+.idea/
+.vscode/
