@@ -1,0 +1,19 @@
+name: Feature request
+description: Suggest an idea
+title: "[FEAT] "
+labels: enhancement
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      placeholder: I want the agent to…
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      placeholder: How we might do it…
+    validations:
+      required: false
