@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Iterable, List
+from typing import Iterable, List, Any
 
 from langchain_community.embeddings import FakeEmbeddings
 from langchain_community.vectorstores import FAISS
@@ -14,7 +14,7 @@ from langchain_openai import OpenAIEmbeddings
 EMBED_DIM = 1536
 
 
-def _get_embeddings():
+def _get_embeddings() -> OpenAIEmbeddings | FakeEmbeddings:
     """Return embeddings implementation based on environment."""
     if os.getenv("OPENAI_API_KEY"):
         return OpenAIEmbeddings()
@@ -60,12 +60,12 @@ def add_documents(store: FAISS, docs: Iterable[str | Document], path: str | Path
         store.save_local(str(path))
 
 
-def as_retriever(store: FAISS, *, k: int = 4):
+def as_retriever(store: FAISS, *, k: int = 4) -> Any:
     """Return a retriever for ``store``."""
     return store.as_retriever(search_kwargs={"k": k})
 
 
-def get_retriever(path: str | Path | None = None, *, k: int = 4):
+def get_retriever(path: str | Path | None = None, *, k: int = 4) -> Any:
     """Convenience wrapper to load a vector store and return its retriever."""
     if path is None:
         path = Path(os.getenv("VECTOR_STORE_PATH", "memory/vector_store"))

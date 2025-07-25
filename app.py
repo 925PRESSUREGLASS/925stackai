@@ -1,4 +1,3 @@
-"""CLI entry-point."""
 import typer
 from pathlib import Path
 from dotenv import load_dotenv
