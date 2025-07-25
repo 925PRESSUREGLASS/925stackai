@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-=======
-"""CLI entry-point."""
-
->>>>>>> 3b0c69ac0f87ff1bb0d903cbcf9c2d4a21e60854
 import typer
-from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -19,7 +13,7 @@ def main() -> None:
 
 
 @app.command()
-def run():
+def run() -> None:
     """Placeholder until agent is built."""
     typer.echo("Agent placeholder")
 

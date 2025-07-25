@@ -12,7 +12,7 @@ try:
     from langchain_community.tools import DuckDuckGoSearchRun
     search_run_cls = DuckDuckGoSearchRun
 except Exception:  # pragma: no cover - optional dependency
-    DuckDuckGoSearchRun = None  # type: ignore[misc]
+    pass
 
 
 def _dummy_search(query: str) -> str:

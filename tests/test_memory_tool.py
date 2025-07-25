@@ -1,6 +1,7 @@
 from modular_ai_agent.tools.memory_tool import tool
 
 
-def test_tool_returns_text():
+def test_tool_returns_text() -> None:
     result = tool("hello")
-    assert isinstance(result, str) and result
+    assert isinstance(result, str)
+    assert bool(result)
