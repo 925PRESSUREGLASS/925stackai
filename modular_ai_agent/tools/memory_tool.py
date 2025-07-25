@@ -1,9 +1,11 @@
-from __future__ import annotations
-
 """LangChain tool for querying the FAISS retriever."""
+
+from __future__ import annotations
 
 from langchain.tools import tool
 from langchain_core.documents import Document
+from langchain_core.tools import Tool
+
 from ..memory.memory_setup import get_retriever
 
 _retriever = get_retriever()
@@ -23,3 +25,8 @@ def memory_search(query: str) -> str:
 
 # alias used by tests
 tool = memory_search
+
+
+def get_memory_tool() -> Tool:
+    """Return the FAISS memory search tool."""
+    return memory_search

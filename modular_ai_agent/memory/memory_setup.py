@@ -1,6 +1,6 @@
+"""FAISS vector store helpers."""
 
 from __future__ import annotations
-"""FAISS vector store helpers."""
 
 import os
 from pathlib import Path
@@ -46,6 +46,11 @@ def add_documents(store: FAISS, docs: Iterable[str | Document]) -> None:
             prepared.append(Document(page_content=str(d)))
     if prepared:
         store.add_documents(prepared)
+        # Remove placeholder document if present
+        for idx, doc_id in list(store.index_to_docstore_id.items()):
+            doc = store.docstore._dict.get(doc_id)
+            if doc and doc.page_content == "dummy":
+                store.delete([doc_id])
 
 
 def as_retriever(store: FAISS, *, k: int = 4):
