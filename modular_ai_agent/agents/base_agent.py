@@ -7,6 +7,8 @@ import os
 from langchain_openai import ChatOpenAI
 from modular_ai_agent.tools.memory_tool import tool as memory_tool
 
+from modular_ai_agent.tools import get_math_tool, get_search_tool
+
 
 class DummyLLM:
     """Fallback LLM that simply echoes the prompt."""
@@ -25,6 +27,10 @@ def get_llm(model: str = "gpt-4o-mini"):
     if os.getenv("OPENAI_API_KEY"):
         return ChatOpenAI(model_name=model, temperature=0)  # type: ignore[call-arg]
     return DummyLLM()
+
+
+# Default tools available to the agent
+tools = [get_search_tool(), get_math_tool()]
 
 
 def run_agent(prompt: str) -> str:
