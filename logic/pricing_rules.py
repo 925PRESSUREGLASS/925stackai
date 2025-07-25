@@ -4,10 +4,12 @@ Exposes `calculate_price(scope: dict) -> dict`.
 Reads `configs/pricing.json` at runtime.
 """
 
+
 import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Optional, List
+from modular_ai_agent.tools.memory_tool import memory_search
 
 CONFIG_PATH = Path(__file__).parent.parent / "configs" / "pricing.json"
 
@@ -39,8 +41,17 @@ def calculate_price(scope: Dict[str, Any]) -> Dict[str, Any]:
     items = []
     total = 0.0
 
+
     if service not in config:
-        raise ValueError(f"Unknown service: {service}")
+        # Fallback: search memory for price per m2
+        query = f"price per m2 {service}"
+        memory_result = memory_search(query)
+        return {
+            "items": [],
+            "surcharges": surcharges,
+            "total": 0.0,
+            "memory_result": memory_result,
+        }
 
     base_price = config[service]["base_price"]
     price = base_price * qty
