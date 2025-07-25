@@ -10,16 +10,13 @@ from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 from langchain_openai import OpenAIEmbeddings
 
-
 EMBED_DIM = 1536
-
 
 def _get_embeddings():
     """Return embeddings implementation based on environment."""
     if os.getenv("OPENAI_API_KEY"):
         return OpenAIEmbeddings()
     return FakeEmbeddings(size=EMBED_DIM)
-
 
 def get_vectorstore(path: str | Path) -> FAISS:
     """Load or initialize a FAISS vector store at ``path``."""
@@ -34,7 +31,6 @@ def get_vectorstore(path: str | Path) -> FAISS:
     store.save_local(str(path))
     return store
 
-
 def add_documents(store: FAISS, docs: Iterable[str | Document]) -> None:
     """Add text or ``Document`` objects to ``store``."""
     prepared: List[Document] = []
@@ -45,7 +41,6 @@ def add_documents(store: FAISS, docs: Iterable[str | Document]) -> None:
             prepared.append(Document(page_content=str(d)))
     if prepared:
         store.add_documents(prepared)
-
 
 def as_retriever(store: FAISS, *, k: int = 4):
     """Return a retriever for ``store``."""
