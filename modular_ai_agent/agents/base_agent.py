@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 
 from langchain_openai import ChatOpenAI
+from modular_ai_agent.tools.memory_tool import tool as memory_tool
 
 from modular_ai_agent.tools import get_math_tool, get_search_tool
 
@@ -37,6 +38,11 @@ def run_agent(prompt: str) -> str:
     # temporary passthrough until we add tools
     llm = get_llm()
     return llm.predict(prompt)
+
+
+def get_tools():
+    """Return tools available to the agent."""
+    return [memory_tool]
 
 
 if __name__ == "__main__":  # pragma: no cover - manual invocation helper
