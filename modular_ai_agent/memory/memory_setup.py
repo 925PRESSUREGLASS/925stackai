@@ -36,8 +36,8 @@ def get_vectorstore(path: str | Path) -> FAISS:
     return store
 
 
-def add_documents(store: FAISS, docs: Iterable[str | Document]) -> None:
-    """Add text or ``Document`` objects to ``store``."""
+def add_documents(store: FAISS, docs: Iterable[str | Document], path: str | Path) -> None:
+    """Add text or ``Document`` objects to ``store`` and persist the index."""
     prepared: List[Document] = []
     for d in docs:
         if isinstance(d, Document):
@@ -46,11 +46,18 @@ def add_documents(store: FAISS, docs: Iterable[str | Document]) -> None:
             prepared.append(Document(page_content=str(d)))
     if prepared:
         store.add_documents(prepared)
-        # Remove placeholder document if present
+        # Remove placeholder document if present using public API
         for idx, doc_id in list(store.index_to_docstore_id.items()):
-            doc = store.docstore._dict.get(doc_id)
-            if doc and doc.page_content == "dummy":
-                store.delete([doc_id])
+            doc = store.docstore.search(doc_id)
+            # Handle both Document and str types
+            if doc:
+                if hasattr(doc, "page_content"):
+                    if doc.page_content == "dummy":
+                        store.delete([doc_id])
+                elif isinstance(doc, str):
+                    if doc == "dummy":
+                        store.delete([doc_id])
+        store.save_local(str(path))
 
 
 def as_retriever(store: FAISS, *, k: int = 4):
