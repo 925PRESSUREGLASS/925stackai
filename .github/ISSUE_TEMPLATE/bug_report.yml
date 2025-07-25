@@ -1,0 +1,19 @@
+name: Bug report
+description: Create a bug report
+title: "[BUG] "
+labels: bug
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      placeholder: A clear description including logs / screenshots.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      placeholder: Steps to reproduce…
+    validations:
+      required: true
