@@ -9,3 +9,5 @@ black
 ruff
 python-dotenv
 typer
+python-docx
+pgsql

@@ -2,18 +2,6 @@
 from __future__ import annotations
 """FAISS vector store helpers."""
 
-_DEFAULT_VECTOR_STORE_PATH = "./vector_store"
-
-_retriever = None
-
-def get_retriever():
-    """Return a retriever backed by a FAISS index (compatibility shim)."""
-    global _retriever
-    if _retriever is None:
-        store = get_vectorstore(_DEFAULT_VECTOR_STORE_PATH)
-        _retriever = as_retriever(store)
-    return _retriever
-
 import os
 from pathlib import Path
 from typing import Iterable, List
@@ -25,24 +13,28 @@ from langchain_openai import OpenAIEmbeddings
 
 EMBED_DIM = 1536
 
+
 def _get_embeddings():
     """Return embeddings implementation based on environment."""
     if os.getenv("OPENAI_API_KEY"):
         return OpenAIEmbeddings()
     return FakeEmbeddings(size=EMBED_DIM)
 
+
 def get_vectorstore(path: str | Path) -> FAISS:
     """Load or initialize a FAISS vector store at ``path``."""
     path = Path(path)
     embeddings = _get_embeddings()
     if (path / "index.faiss").exists():
-        return FAISS.load_local(str(path), embeddings, allow_dangerous_deserialization=True)
+        return FAISS.load_local(
+            str(path), embeddings, allow_dangerous_deserialization=True
+        )
 
     path.mkdir(parents=True, exist_ok=True)
     store = FAISS.from_documents([Document(page_content="dummy")], embeddings)
-    store.delete(list(store.index_to_docstore_id.values()))
     store.save_local(str(path))
     return store
+
 
 def add_documents(store: FAISS, docs: Iterable[str | Document]) -> None:
     """Add text or ``Document`` objects to ``store``."""
@@ -55,6 +47,16 @@ def add_documents(store: FAISS, docs: Iterable[str | Document]) -> None:
     if prepared:
         store.add_documents(prepared)
 
+
 def as_retriever(store: FAISS, *, k: int = 4):
     """Return a retriever for ``store``."""
     return store.as_retriever(search_kwargs={"k": k})
+
+
+def get_retriever(path: str | Path = "memory/vector_store", *, k: int = 4):
+    """Convenience wrapper to load a vector store and return its retriever."""
+    store = get_vectorstore(path)
+    if not store.index_to_docstore_id:
+        store.add_documents([Document(page_content="hello world")])
+        store.save_local(str(Path(path)))
+    return as_retriever(store, k=k)
