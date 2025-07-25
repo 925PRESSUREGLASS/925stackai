@@ -21,7 +21,7 @@ class DummyLLM:
         return prompt
 
 
-def get_llm(model: str = "gpt-4o-mini"):
+def get_llm(model: str = "gpt-4o-mini") -> ChatOpenAI | DummyLLM:
     """Return an LLM instance.
 
     If an OpenAI API key is configured, ``ChatOpenAI`` will be used; otherwise a
