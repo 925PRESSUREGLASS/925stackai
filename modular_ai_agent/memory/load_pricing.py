@@ -17,7 +17,7 @@ from typing import List
 from pydantic import BaseModel, PositiveFloat, ValidationError
 from langchain.schema import Document
 
-from .memory_setup import get_vectorstore
+from .memory_setup import get_vectorstore, add_documents
 
 
 class PricingRecord(BaseModel):
@@ -55,8 +55,7 @@ def ingest(csv_path: str, store_path: str = "memory/vector_store") -> int:
             )
 
     if added:
-        vs.add_documents(added)
-        vs.save_local(store_path)
+        add_documents(vs, added, store_path)
     print(f"✅  Ingested {len(added)} pricing records into {store_path}")
     return len(added)
 

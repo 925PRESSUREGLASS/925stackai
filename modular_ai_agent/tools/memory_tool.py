@@ -23,8 +23,11 @@ def memory_search(query: str) -> str:
     return str(docs)
 
 
+
 # alias used by tests
 tool = memory_search  # type: ignore[assignment]
+
+__all__ = ["tool"]
 
 
 def get_memory_tool() -> Tool:

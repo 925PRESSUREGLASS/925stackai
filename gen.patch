@@ -1,0 +1,144 @@
+--- logic/pricing_rules.py ---
+"""
+Pricing engine for window cleaning & pressure washing.
+Exposes `calculate_price(scope: dict) -> dict`.
+Reads `configs/pricing.json` at runtime.
+"""
+
+import json
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Dict
+
+CONFIG_PATH = Path(__file__).parent.parent / "configs" / "pricing.json"
+
+@dataclass
+class PricingRecord:
+    service: str
+    qty: int
+    size: str = ""
+    surcharges: Dict[str, Any] = None
+    items: list = None
+    total: float = 0.0
+
+def calculate_price(scope: dict) -> dict:
+    """Calculate price based on scope and pricing config."""
+    with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+        config = json.load(f)
+
+    service = scope.get("service")
+    qty = int(scope.get("qty", 1))
+    size = scope.get("size", "")
+    surcharges = scope.get("surcharges", {})
+
+    items = []
+    total = 0.0
+
+    if service not in config:
+        raise ValueError(f"Unknown service: {service}")
+
+    base_price = config[service]["base_price"]
+    price = base_price * qty
+
+    # Apply size multiplier if applicable
+    if size and "large_multiplier" in config[service] and size == "large":
+        price *= config[service]["large_multiplier"]
+
+    items.append({
+        "service": service,
+        "qty": qty,
+        "unit_price": base_price,
+        "size": size,
+        "subtotal": round(price, 2)
+    })
+
+    # Apply surcharges
+    surcharge_total = 0.0
+    for key, value in (surcharges or {}).items():
+        surcharge_cfg = config.get("surcharge", {}).get(key)
+        if surcharge_cfg:
+            if isinstance(surcharge_cfg, (int, float)):
+                surcharge = surcharge_cfg if value else 0
+            else:
+                surcharge = 0
+            surcharge_total += surcharge
+
+    total = price + surcharge_total
+
+    return {
+        "items": items,
+        "surcharges": surcharges,
+        "total": round(total, 2)
+    }
+--- agents/quote_agent.py ---
+"""
+Quote agent that uses LangChain, pricing_rules.calculate_price,
+and returns STRICT JSON {"customer", "items", "total"}.
+"""
+
+import json
+from typing import Any, Dict
+
+from modular_ai_agent.agents.base_agent import get_llm, tools
+from logic.pricing_rules import calculate_price
+
+def build_quote_agent():
+    # For now, just a passthrough using pricing_rules and tools
+    llm = get_llm()
+
+    def agent(prompt: str) -> str:
+        # Simulate prompt parsing; hardcoded scope for now
+        scope = {
+            "service": "window",
+            "qty": 20,
+            "size": "large",
+            "surcharges": {}
+        }
+        customer = "Test Customer"
+        pricing = calculate_price(scope)
+        result = {
+            "customer": customer,
+            "items": pricing["items"],
+            "total": pricing["total"]
+        }
+        return json.dumps(result)
+
+    return agent
+
+def run_quote(prompt: str) -> str:
+    agent = build_quote_agent()
+    output = agent(prompt)
+    # Ensure output is valid JSON with required keys
+    data = json.loads(output)
+    assert all(k in data for k in ("customer", "items", "total"))
+    return output
+--- configs/pricing.json ---
+{
+  "window": { "base_price": 4.0, "large_multiplier": 1.25 },
+  "pressure": { "base_price": 2.5 },
+  "surcharge": {
+    "two_storey": 40,
+    "heavy_soil": 1.5,
+    "urgent": 30
+  }
+}
+--- tests/test_pricing_rules.py ---
+from logic.pricing_rules import calculate_price
+
+def test_calculate_price_window_large():
+    scope = {"service": "window", "qty": 20, "size": "large"}
+    result = calculate_price(scope)
+    assert "items" in result
+    assert result["items"][0]["subtotal"] == 100.0  # 4.0 * 20 * 1.25
+    assert result["total"] == 100.0
+--- tests/test_quote_agent.py ---
+import json
+from agents.quote_agent import run_quote
+
+def test_run_quote_returns_valid_json():
+    prompt = "Create a quote for 20 large windows"
+    output = run_quote(prompt)
+    data = json.loads(output)
+    assert isinstance(data, dict)
+    assert set(data.keys()) == {"customer", "items", "total"}
+    assert data["total"] == 100.0

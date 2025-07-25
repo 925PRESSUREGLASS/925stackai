@@ -5,7 +5,7 @@ from modular_ai_agent.memory.load_pricing import ingest
 from modular_ai_agent.memory.memory_setup import get_vectorstore
 
 
-def test_ingest_and_query():
+def test_ingest_and_query() -> None:
     # copy sample CSV into a tmp dir so we don't pollute repo store
     tmp = tempfile.TemporaryDirectory()
     csv_path = Path(tmp.name) / "pricing.csv"
