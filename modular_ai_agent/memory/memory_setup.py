@@ -45,3 +45,13 @@ def add_documents(store: FAISS, docs: Iterable[str | Document]) -> None:
 def as_retriever(store: FAISS, *, k: int = 4):
     """Return a retriever for ``store``."""
     return store.as_retriever(search_kwargs={"k": k})
+
+
+def get_retriever(path: str | Path | None = None):
+    """Return a default FAISS retriever."""
+    if path is None:
+        path = Path(os.getenv("VECTOR_STORE_PATH", "/tmp/faiss_store"))
+    store = get_vectorstore(path)
+    if not list(store.index_to_docstore_id.values()):
+        add_documents(store, ["placeholder memory"])
+    return as_retriever(store)
