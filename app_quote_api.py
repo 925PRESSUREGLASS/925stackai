@@ -1,7 +1,15 @@
 
+
+
 # --- Similar Quotes Endpoint ---
 from vector_store.quote_embedder import QuoteVectorStore
 from fastapi import Body
+from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException, Body
+from agents.quote_agent import run_quote
+import json
+
+app = FastAPI(title="Quote API")
 
 class SimilarQuoteRequest(BaseModel):
     prompt: str
@@ -21,12 +29,7 @@ def get_similar_quotes(request: SimilarQuoteRequest = Body(...)):
     matches = vs.query(request.prompt, top_k=request.top_k)
     return {"matches": matches}
 
-from fastapi import FastAPI, HTTPException, Body
-from pydantic import BaseModel
-from agents.quote_agent import run_quote
-import json
 
-app = FastAPI(title="Quote API")
 
 class QuoteRequest(BaseModel):
     prompt: str
