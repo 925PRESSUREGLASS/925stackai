@@ -27,6 +27,9 @@ def build_quote_agent() -> Callable[[str], str]:
             "items": pricing["items"],
             "total": pricing["total"],
         }
+        # If pricing has memory_result (fallback), include it in output
+        if "memory_result" in pricing:
+            result["memory_result"] = pricing["memory_result"]
         return json.dumps(result)
 
     return agent
