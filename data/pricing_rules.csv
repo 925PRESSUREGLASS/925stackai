@@ -1,0 +1,4 @@
+material,price_per_m2,currency
+epoxy,50,USD
+polyurethane,70,USD
+# (You can change or extend rows later; keep these for test determinism)

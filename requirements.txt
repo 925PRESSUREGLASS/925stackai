@@ -11,3 +11,4 @@ python-dotenv
 typer
 python-docx
 pgsql
+pydantic
