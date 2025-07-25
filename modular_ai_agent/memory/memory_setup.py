@@ -48,7 +48,7 @@ def add_documents(store: FAISS, docs: Iterable[str | Document]) -> None:
         store.add_documents(prepared)
         # Remove placeholder document if present
         for idx, doc_id in list(store.index_to_docstore_id.items()):
-            doc = store.docstore._dict.get(doc_id)
+            doc = store.docstore._dict.get(doc_id)  # type: ignore[attr-defined]
             if doc and doc.page_content == "dummy":
                 store.delete([doc_id])
 

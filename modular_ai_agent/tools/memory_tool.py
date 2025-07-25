@@ -24,9 +24,9 @@ def memory_search(query: str) -> str:
 
 
 # alias used by tests
-tool = memory_search
+tool = memory_search  # type: ignore[assignment]
 
 
 def get_memory_tool() -> Tool:
     """Return the FAISS memory search tool."""
-    return memory_search
+    return memory_search  # type: ignore[return-value]
