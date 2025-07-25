@@ -1,7 +1,11 @@
 from pathlib import Path
 
 from langchain_core.documents import Document
-from modular_ai_agent.memory.memory_setup import get_vectorstore, add_documents, as_retriever
+from modular_ai_agent.memory.memory_setup import (
+    get_vectorstore,
+    add_documents,
+    as_retriever,
+)
 
 
 def test_memory_roundtrip(tmp_path: Path) -> None:
