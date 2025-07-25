@@ -14,7 +14,7 @@ def memory_search(query: str) -> str:
     """Search the FAISS memory and return matching document text."""
     docs = _retriever.invoke(query)
     if not docs:
-        return ""
+        return "No documents found."
     if isinstance(docs[0], Document):
         return "\n".join(doc.page_content for doc in docs)
     # fallback for typed list
