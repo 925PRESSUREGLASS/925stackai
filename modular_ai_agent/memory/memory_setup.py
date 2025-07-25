@@ -1,5 +1,18 @@
-"""FAISS vector store helpers."""
+
 from __future__ import annotations
+"""FAISS vector store helpers."""
+
+_DEFAULT_VECTOR_STORE_PATH = "./vector_store"
+
+_retriever = None
+
+def get_retriever():
+    """Return a retriever backed by a FAISS index (compatibility shim)."""
+    global _retriever
+    if _retriever is None:
+        store = get_vectorstore(_DEFAULT_VECTOR_STORE_PATH)
+        _retriever = as_retriever(store)
+    return _retriever
 
 import os
 from pathlib import Path
