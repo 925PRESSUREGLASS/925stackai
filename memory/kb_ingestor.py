@@ -27,6 +27,10 @@ _SUPPORTED_SUFFIXES = {
     ".docx": UnstructuredWordDocumentLoader,
 }
 
+_LOADER_CONFIGS = {
+    JSONLoader: {"jq_schema": "."},
+}
+
 
 def _load_file(path: Path) -> List[Document]:
     """Load ``path`` into LangChain ``Document`` objects with metadata."""
@@ -34,10 +38,8 @@ def _load_file(path: Path) -> List[Document]:
     if loader_cls is None:
         return []
 
-    if loader_cls is JSONLoader:
-        loader = loader_cls(str(path), jq_schema=".")
-    else:
-        loader = loader_cls(str(path))
+    loader_params = _LOADER_CONFIGS.get(loader_cls, {})
+    loader = loader_cls(str(path), **loader_params)
 
     docs = loader.load()
     for doc in docs:
