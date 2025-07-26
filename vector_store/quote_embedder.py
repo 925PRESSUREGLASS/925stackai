@@ -2,7 +2,7 @@
 from typing import List, Dict, Any
 import os
 import json
-from langchain.embeddings import OpenAIEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings
 import chromadb
 from chromadb.config import Settings
 from chromadb.utils import embedding_functions
@@ -13,7 +13,7 @@ class QuoteVectorStore:
         self.persist_dir = persist_dir
         self.client = chromadb.PersistentClient(path=self.persist_dir, settings=Settings(allow_reset=True))
         self.collection = self.client.get_or_create_collection("quotes")
-        self.embedding_fn = embedding_functions.OpenAIEmbeddingFunction()
+        self.embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
     def build_index(self) -> None:
         if not os.path.exists(self.data_path):
@@ -32,9 +32,8 @@ class QuoteVectorStore:
             )
 
     def query(self, prompt: str, top_k: int = 3) -> List[Dict[str, Any]]:
-        # Compute embedding using OpenAIEmbeddings
-        embedder = OpenAIEmbeddings()
-        embedding = embedder.embed_query(prompt)
+        # Compute embedding using HuggingFaceEmbeddings (offline)
+        embedding = self.embedding_model.embed_query(prompt)
         results = self.collection.query(
             query_embeddings=[embedding],
             n_results=top_k
