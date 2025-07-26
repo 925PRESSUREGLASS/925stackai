@@ -2,11 +2,8 @@
 
 from __future__ import annotations
 
-import os
 
 
-from langchain_openai import ChatOpenAI
-from langchain_community.llms import Ollama
 
 from modular_ai_agent.tools import (
     get_math_tool,
@@ -24,9 +21,12 @@ class DummyLLM:
 
 
 def get_llm():
-    from langchain_community.llms import Ollama
-
-    return Ollama(model="llama3")
+    """Return Ollama if available, otherwise a dummy LLM."""
+    try:
+        from langchain_community.llms import Ollama
+        return Ollama(model="llama3")
+    except Exception:
+        return DummyLLM()
 
 
 # Default tools available to the agent
@@ -35,9 +35,11 @@ tools = [get_search_tool(), get_math_tool(), get_memory_tool()]
 
 def run_agent(prompt: str) -> str:
     """Run a prompt through the agent and return the result."""
-    # temporary passthrough until we add tools
     llm = get_llm()
-    return llm.predict(prompt)
+    try:
+        return llm.predict(prompt)
+    except Exception:
+        return DummyLLM().predict(prompt)
 
 
 if __name__ == "__main__":  # pragma: no cover - manual invocation helper
