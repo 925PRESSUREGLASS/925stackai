@@ -1,23 +1,32 @@
 from __future__ import annotations
+
+import subprocess
+import sys
 from pathlib import Path
-from typing import Any
 import tempfile
-from logic.kb_ingestor import ingest
+import os
+
+from modular_ai_agent.memory.memory_setup import get_vectorstore
 
 
-def test_ingest_file(tmp_path: Path) -> None:
-    # Create a dummy text file
-    file_path = tmp_path / "test.txt"
-    file_path.write_text("Hello world!")
-    count = ingest(file_path, str(tmp_path / "vs"))
-    assert count == 1
+def test_cli_ingest_and_search() -> None:
+    """CLI ingestion writes docs and allows similarity search."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        docs_dir = Path(tmpdir) / "docs"
+        docs_dir.mkdir()
+        (docs_dir / "a.md").write_text("alpha bravo")
+        (docs_dir / "b.md").write_text("charlie delta")
+        store_path = Path(tmpdir) / "vs"
 
+        env = dict(os.environ)
+        env["PYTHONPATH"] = str(Path(__file__).resolve().parents[1])
+        subprocess.run(
+            [sys.executable, "scripts/ingest.py", str(docs_dir), "--store", str(store_path)],
+            check=True,
+            cwd=Path(__file__).resolve().parents[1],
+            env=env,
+        )
 
-def test_ingest_directory(tmp_path: Path) -> None:
-    # Create multiple files in a directory
-    dir_path = tmp_path / "docs"
-    dir_path.mkdir()
-    (dir_path / "a.txt").write_text("A")
-    (dir_path / "b.txt").write_text("B")
-    count = ingest(dir_path, str(tmp_path / "vs"))
-    assert count == 2
+        vs = get_vectorstore(store_path)
+        hits = vs.similarity_search("bravo")
+        assert hits
