@@ -7,6 +7,4 @@ __pycache__/
 .idea/
 .vscode/
 /memory/
-!memory/
-!memory/*.py
-memory/vector_store/
+
