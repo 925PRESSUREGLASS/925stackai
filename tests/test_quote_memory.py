@@ -1,16 +1,17 @@
-import json
+import os, sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from agents.quote_agent import build_quote_agent
-from logic.pricing_rules import CONFIG_PATH
+import pytest
+from agents.quote_agent import QuoteAgent
+from logic.job_parser import pricing_rules
 
 
-def test_followup_applies_urgent_surcharge() -> None:
-    agent = build_quote_agent()
+def test_urgent_followup_increases_total():
+    agent = QuoteAgent().build_quote_agent()
+    agent.handle_prompt("Quote 20 windows")
+    base_total = agent.scope["total"]
 
-    first = json.loads(agent("Quote 20 windows"))
-    second = json.loads(agent("make that urgent"))
+    agent.handle_prompt("make that urgent")
+    new_total = agent.scope["total"]
 
-    with open(CONFIG_PATH, "r", encoding="utf-8") as f:
-        surcharge = json.load(f)["surcharge"]["urgent"]
-
-    assert second["total"] == first["total"] + surcharge
+    assert new_total - base_total == pricing_rules["urgent_surcharge"]

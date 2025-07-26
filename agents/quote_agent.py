@@ -1,59 +1,51 @@
-"""
-Quote agent that uses LangChain, pricing_rules.calculate_price,
-and returns STRICT JSON {"customer", "items", "total"}.
-"""
+from __future__ import annotations
 
-import json
-from typing import Any, Dict, Callable
+from dataclasses import dataclass, field
+from typing import Dict
+import re
+
 from langchain.memory import ConversationBufferMemory
 
-from modular_ai_agent.agents.base_agent import get_llm
-
-from logic.pricing_rules import calculate_price
-from logic.job_parser import parse_prompt, parse_followup
+from logic.job_parser import parse_followup, pricing_rules
 
 
+@dataclass
 class QuoteAgent:
-    """Stateful quote agent keeping short conversation history."""
+    """Simple quoting agent with short term memory."""
 
-    def __init__(self) -> None:
-        self.llm = get_llm()
-        self.memory = ConversationBufferMemory()
-        self._last_scope: Dict[str, Any] | None = None
+    memory: ConversationBufferMemory = field(default_factory=lambda: ConversationBufferMemory(k=3, return_messages=True))
+    scope: Dict[str, any] = field(default_factory=dict)
 
-    def __call__(self, prompt: str) -> str:
-        if self._last_scope is None:
-            scope = parse_prompt(prompt)
-        else:
-            scope = parse_followup(prompt, self._last_scope)
-        self._last_scope = scope
+    def build_quote_agent(self) -> "QuoteAgent":
+        """Initialize or reset agent state while preserving memory."""
+        if not isinstance(self.memory, ConversationBufferMemory):
+            self.memory = ConversationBufferMemory(k=3, return_messages=True)
+        return self
 
+    def _calculate_total(self) -> float:
+        windows = self.scope.get("windows", 0)
+        total = windows * pricing_rules.get("window", 0)
+        if self.scope.get("gutter_clean"):
+            total += pricing_rules.get("gutter_clean", 0)
+        if self.scope.get("urgent"):
+            total += pricing_rules.get("urgent_surcharge", 0)
+        self.scope["total"] = total
+        return total
+
+    def handle_prompt(self, prompt: str) -> str:
+        """Process a user prompt and update quote."""
+        self.scope = parse_followup(prompt, self.scope)
+        total = self._calculate_total()
+        response = (
+            f"Quote for {self.scope.get('windows', 0)} windows"
+        )
+        if self.scope.get("gutter_clean"):
+            response += " with gutter cleaning"
+        if self.scope.get("urgent"):
+            response += " (urgent)"
+        response += f". Total: ${total:.2f}"
+
+        # track conversation
         self.memory.chat_memory.add_user_message(prompt)
-        customer = "Test Customer"
-        pricing = calculate_price(scope)
-        result = {
-            "customer": customer,
-            "items": pricing["items"],
-            "total": pricing["total"],
-        }
-        if "memory_result" in pricing:
-            result["memory_result"] = pricing["memory_result"]
-
-        response = json.dumps(result)
         self.memory.chat_memory.add_ai_message(response)
         return response
-
-
-def build_quote_agent() -> Callable[[str], str]:
-    """Return a stateful quote agent instance."""
-
-    return QuoteAgent()
-
-
-def run_quote(prompt: str) -> str:
-    agent = build_quote_agent()
-    output = agent(prompt)
-    # Ensure output is valid JSON with required keys
-    data = json.loads(output)
-    assert all(k in data for k in ("customer", "items", "total"))
-    return output
