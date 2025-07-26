@@ -16,6 +16,15 @@ from chromadb.utils import embedding_functions
 
 
 class QuoteVectorStore:
+
+
+    def count(self) -> int:
+        """Return the number of vectors in the collection."""
+        try:
+            info = self.collection.count()
+            return info if isinstance(info, int) else 0
+        except Exception:
+            return 0
     def __init__(
         self,
         data_path: str = "data/quotes.jsonl",
@@ -43,14 +52,25 @@ class QuoteVectorStore:
             return
         with open(self.data_path, "r", encoding="utf-8") as f:
             quotes = [json.loads(line) for line in f if line.strip()]
-        # Clear and re-add all
-        self.collection.delete(where={})
+        # Clear and re-add all (delete all docs by IDs)
+        try:
+            all_docs = self.collection.get()
+            all_ids = all_docs.get("ids", [])
+            if all_ids:
+                self.collection.delete(ids=all_ids)
+        except Exception:
+            pass
         for i, quote in enumerate(quotes):
             content = quote.get("content") or quote.get("prompt") or str(quote)
-            metadata = {
-                "quote_id": quote.get("id", str(i)),
-                **{k: v for k, v in quote.items() if k != "content"},
-            }
+            metadata = {"quote_id": quote.get("id", str(i))}
+            for k, v in quote.items():
+                if k == "content":
+                    continue
+                # Serialize non-primitive types
+                if isinstance(v, (dict, list)):
+                    metadata[k] = json.dumps(v, ensure_ascii=False)
+                else:
+                    metadata[k] = v
             self.collection.add(
                 documents=[content],
                 metadatas=[metadata],
