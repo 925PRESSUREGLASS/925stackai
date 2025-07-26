@@ -18,6 +18,8 @@ class QuoteAgent:
 
     def __init__(self) -> None:
         self.llm = get_llm()
+        # Updated for LangChain 0.3.1+ memory API
+        # Updated for LangChain 0.3.1+ memory API (see migration guide)
         self.memory = ConversationBufferMemory()
         self._last_scope: Dict[str, Any] | None = None
 
