@@ -5,6 +5,7 @@ from typing import Dict, Any, List
 STORE_PATH = Path(__file__).parent.parent / "data" / "quotes.jsonl"
 STORE_PATH.parent.mkdir(parents=True, exist_ok=True)
 
+
 class JobStore:
     def __init__(self, path: Path = STORE_PATH):
         self.path = path

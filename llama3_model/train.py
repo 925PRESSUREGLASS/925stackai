@@ -11,6 +11,7 @@ DATA_PATH = Path("../data/quotes.jsonl")
 MODEL_OUTPUT_DIR = Path("./output")
 MODEL_OUTPUT_DIR.mkdir(exist_ok=True)
 
+
 # Example: Placeholder for your training logic
 # Replace with your preferred LLM fine-tuning library (e.g., HuggingFace Transformers, Llama.cpp, etc.)
 def train_llama3_model(data_path: Path, output_dir: Path):
@@ -25,6 +26,7 @@ def train_llama3_model(data_path: Path, output_dir: Path):
                 if i >= 2:
                     break
     print("[INFO] Training pipeline not yet implemented. Add your code here!")
+
 
 if __name__ == "__main__":
     train_llama3_model(DATA_PATH, MODEL_OUTPUT_DIR)

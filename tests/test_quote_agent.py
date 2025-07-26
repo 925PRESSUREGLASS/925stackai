@@ -1,6 +1,7 @@
 import json
 from agents.quote_agent import run_quote
 
+
 def test_run_quote_returns_valid_json():
     prompt = "Please quote 20 large windows for cleaning"
     output = run_quote(prompt)

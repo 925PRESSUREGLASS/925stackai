@@ -4,7 +4,6 @@ Exposes `calculate_price(scope: dict) -> dict`.
 Reads `configs/pricing.json` at runtime.
 """
 
-
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -40,7 +39,6 @@ def calculate_price(scope: Dict[str, Any]) -> Dict[str, Any]:
 
     items = []
     total = 0.0
-
 
     if service not in config:
         # Fallback: search memory for price per m2

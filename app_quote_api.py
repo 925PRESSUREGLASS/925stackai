@@ -1,6 +1,3 @@
-
-
-
 # --- Similar Quotes Endpoint ---
 from vector_store.quote_embedder import QuoteVectorStore
 from fastapi import Body
@@ -11,16 +8,20 @@ import json
 
 app = FastAPI(title="Quote API")
 
+
 class SimilarQuoteRequest(BaseModel):
     prompt: str
     top_k: int = 3
+
 
 class SimilarQuoteMatch(BaseModel):
     content: str
     metadata: dict
 
+
 class SimilarQuoteResponse(BaseModel):
     matches: list[SimilarQuoteMatch]
+
 
 @app.post("/quote/similar", response_model=SimilarQuoteResponse)
 def get_similar_quotes(request: SimilarQuoteRequest = Body(...)):
@@ -30,15 +31,16 @@ def get_similar_quotes(request: SimilarQuoteRequest = Body(...)):
     return {"matches": matches}
 
 
-
 class QuoteRequest(BaseModel):
     prompt: str
+
 
 class QuoteResponse(BaseModel):
     customer: str
     items: list
     total: float
     memory_result: str | None = None
+
 
 @app.post("/quote", response_model=QuoteResponse)
 def get_quote(request: QuoteRequest):

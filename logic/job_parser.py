@@ -1,7 +1,8 @@
-
 from __future__ import annotations
 from typing import Dict, Any, List, Optional
 import re
+
+
 # Natural language prompt parser
 def parse_prompt(prompt: str) -> Dict[str, Any]:
     """
@@ -55,7 +56,7 @@ def parse_job(data: Dict[str, Any]) -> Dict[str, Any]:
     job["surcharges"] = data.get("surcharges", {})
     return job
 
+
 # Example usage for mypy strict compliance
 def parse_jobs(data_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return [parse_job(d) for d in data_list]
-
