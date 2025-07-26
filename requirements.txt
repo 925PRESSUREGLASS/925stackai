@@ -12,3 +12,4 @@ typer
 python-docx
 pgsql
 pydantic
+streamlit>=1.25
