@@ -41,7 +41,11 @@ def _load_file(path: Path) -> List[Document]:
     loader_params = _LOADER_CONFIGS.get(loader_cls, {})
     loader = loader_cls(str(path), **loader_params)
 
-    docs = loader.load()
+    try:
+        docs = loader.load()
+    except Exception as e:
+        print(f"Error loading file {path}: {e}")
+        return []
     for doc in docs:
         doc.metadata.setdefault("filename", path.name)
         doc.metadata.setdefault("type", path.suffix.lstrip("."))
