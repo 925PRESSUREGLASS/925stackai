@@ -1,4 +1,3 @@
-
 import streamlit as st
 import sys
 import os
@@ -32,9 +31,7 @@ def main() -> None:
         if prompt.strip():
             output = run_quote(prompt.strip())
             data = parse_quote_output(output)
-            st.session_state.history.append(
-                {"prompt": prompt.strip(), "data": data}
-            )
+            st.session_state.history.append({"prompt": prompt.strip(), "data": data})
         st.session_state["prompt_input"] = ""
 
     with left:
@@ -49,12 +46,16 @@ def main() -> None:
         cpu = psutil.cpu_percent(interval=0.5)
         mem = psutil.virtual_memory()
         st.write(f"CPU Usage: {cpu}%")
-        st.write(f"Memory Usage: {mem.percent}% ({mem.used // (1024**2)} MB / {mem.total // (1024**2)} MB)")
+        st.write(
+            f"Memory Usage: {mem.percent}% ({mem.used // (1024**2)} MB / {mem.total // (1024**2)} MB)"
+        )
         try:
             gpus = GPUtil.getGPUs()
             if gpus:
                 for gpu in gpus:
-                    st.write(f"GPU {gpu.id}: {gpu.name}, Load: {gpu.load*100:.1f}%, Mem: {gpu.memoryUsed}MB/{gpu.memoryTotal}MB")
+                    st.write(
+                        f"GPU {gpu.id}: {gpu.name}, Load: {gpu.load*100:.1f}%, Mem: {gpu.memoryUsed}MB/{gpu.memoryTotal}MB"
+                    )
             else:
                 st.write("No GPU detected.")
         except Exception as e:
@@ -64,7 +65,9 @@ def main() -> None:
         vector_path = Path("vector_store")
         if (vector_path / "index.faiss").exists():
             try:
-                store = FAISS.load_local(str(vector_path), None, allow_dangerous_deserialization=True)
+                store = FAISS.load_local(
+                    str(vector_path), None, allow_dangerous_deserialization=True
+                )
                 st.write(f"Number of vectors: {len(store.index_to_docstore_id)}")
             except Exception as e:
                 st.write(f"Could not load vector store: {e}")
