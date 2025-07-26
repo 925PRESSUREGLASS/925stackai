@@ -8,7 +8,7 @@ try:
     from langchain.embeddings import OpenAIEmbeddings
 except ImportError:
     OpenAIEmbeddings = None
-from typing import Optional
+# Removed redundant import of Optional
 
 import chromadb
 from chromadb.config import Settings
