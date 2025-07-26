@@ -1,18 +1,18 @@
-from typing import List, Dict, Any
-import os
 import json
+import os
+from typing import Any, Dict, List
+
 from langchain.embeddings import HuggingFaceEmbeddings
 
 try:
     from langchain.embeddings import OpenAIEmbeddings
 except ImportError:
     OpenAIEmbeddings = None
+# Removed redundant import of Optional
+
 import chromadb
 from chromadb.config import Settings
 from chromadb.utils import embedding_functions
-
-
-from typing import Optional
 
 
 class QuoteVectorStore:

@@ -1,10 +1,11 @@
 # --- Similar Quotes Endpoint ---
-from vector_store.quote_embedder import QuoteVectorStore
-from fastapi import Body
-from pydantic import BaseModel
-from fastapi import FastAPI, HTTPException, Body
-from agents.quote_agent import run_quote
 import json
+
+from fastapi import Body, FastAPI, HTTPException
+from pydantic import BaseModel
+
+from agents.quote_agent import run_quote
+from vector_store.quote_embedder import QuoteVectorStore
 
 app = FastAPI(title="Quote API")
 

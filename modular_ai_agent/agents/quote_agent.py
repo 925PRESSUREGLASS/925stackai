@@ -12,7 +12,8 @@ from __future__ import annotations
 import json
 from typing import List
 
-from .base_agent import get_llm, tools as base_tools
+from .base_agent import get_llm
+from .base_agent import tools as base_tools
 
 # Export the same tool list so it can be extended elsewhere
 tools = base_tools

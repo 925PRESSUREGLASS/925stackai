@@ -1,7 +1,8 @@
-import streamlit as st
-import sys
 import os
+import sys
 from pathlib import Path
+
+import streamlit as st
 
 # Ensure project root is in sys.path for imports
 project_root = Path(__file__).resolve().parent.parent
@@ -19,10 +20,11 @@ def main() -> None:
     if "history" not in st.session_state:
         st.session_state.history = []
 
-    import psutil
-    import GPUtil
-    from langchain_community.vectorstores import FAISS
     from pathlib import Path
+
+    import GPUtil
+    import psutil
+    from langchain_community.vectorstores import FAISS
 
     left, right = st.columns(2)
 

@@ -7,7 +7,8 @@ Reads `configs/pricing.json` at runtime.
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional, List
+from typing import Any, Dict, List, Optional
+
 from modular_ai_agent.tools.memory_tool import memory_search
 
 CONFIG_PATH = Path(__file__).parent.parent / "configs" / "pricing.json"

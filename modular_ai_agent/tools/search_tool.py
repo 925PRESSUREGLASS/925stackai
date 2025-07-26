@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-
 from typing import Any
-from langchain_core.tools import Tool
 
+from langchain_core.tools import Tool
 
 search_run_cls: Any = None
 try:
