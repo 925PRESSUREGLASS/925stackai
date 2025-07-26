@@ -24,11 +24,14 @@ def _dummy_search(query: str) -> str:
 def get_search_tool() -> Tool:
     """Return a search tool, falling back to a dummy tool if needed."""
     if search_run_cls is not None:
-        return Tool.from_function(
-            func=search_run_cls().run,
-            name="search",
-            description="Search the web for information using DuckDuckGo.",
-        )
+        try:  # ``duckduckgo_search`` may be missing
+            return Tool.from_function(
+                func=search_run_cls().run,
+                name="search",
+                description="Search the web for information using DuckDuckGo.",
+            )
+        except Exception:  # pragma: no cover - dependency not installed
+            pass
     return Tool.from_function(
         func=_dummy_search,
         name="search",
