@@ -4,6 +4,7 @@ from __future__ import annotations
 
 
 
+
 class DummyLLM:
     """Fallback LLM that simply echoes the prompt."""
 
