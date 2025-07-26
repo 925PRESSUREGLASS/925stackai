@@ -16,7 +16,9 @@ if __name__ == "__main__":
         path = Path("faiss_test_store2")
         if (path / "index.faiss").exists():
             print("Loading existing FAISS index...")
-            store = FAISS.load_local(str(path), embeddings, allow_dangerous_deserialization=True)
+            store = FAISS.load_local(
+                str(path), embeddings, allow_dangerous_deserialization=True
+            )
         else:
             print("Creating new FAISS index...")
             path.mkdir(parents=True, exist_ok=True)
