@@ -1,23 +1,32 @@
-"""
-Quote agent that uses LangChain, pricing_rules.calculate_price,
-and returns STRICT JSON {"customer", "items", "total"}.
-"""
+"""Simple quote agent using rule-based pricing."""
+
+from __future__ import annotations
 
 import json
 from typing import Any, Dict, Callable
-from langchain.memory import ConversationBufferMemory
-
-from modular_ai_agent.agents.base_agent import get_llm
 
 from logic.pricing_rules import calculate_price
 from logic.job_parser import parse_prompt, parse_followup
+
+
+class ConversationBufferMemory:
+    """Minimal conversation memory stub."""
+
+    class ChatMemory(list):
+        def add_user_message(self, msg: str) -> None:
+            self.append(("user", msg))
+
+        def add_ai_message(self, msg: str) -> None:
+            self.append(("ai", msg))
+
+    def __init__(self) -> None:
+        self.chat_memory = self.ChatMemory()
 
 
 class QuoteAgent:
     """Stateful quote agent keeping short conversation history."""
 
     def __init__(self) -> None:
-        self.llm = get_llm()
         self.memory = ConversationBufferMemory()
         self._last_scope: Dict[str, Any] | None = None
 

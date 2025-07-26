@@ -1,26 +1,15 @@
 from __future__ import annotations
-from pathlib import Path
-from typing import Any, List
 import argparse
+from pathlib import Path
+from typing import List
 
-from langchain_community.document_loaders import (
-    PyPDFLoader,
-    CSVLoader,
-    UnstructuredMarkdownLoader,
-    TextLoader,
-)
-from modular_ai_agent.memory.memory_setup import get_vectorstore
+from modular_ai_agent.memory.memory_setup import Document, get_vectorstore
 
 
-def _loader_for(path: Path) -> Any:
-    suf = path.suffix.lower()
-    if suf == ".pdf":
-        return PyPDFLoader(str(path))
-    if suf == ".csv":
-        return CSVLoader(str(path))
-    if suf in {".md", ".markdown"}:
-        return UnstructuredMarkdownLoader(str(path))
-    return TextLoader(str(path))
+def _loader_for(path: Path) -> List[Document]:
+    """Return a list of Documents loaded from ``path``."""
+    text = path.read_text(encoding="utf-8")
+    return [Document(page_content=text)]
 
 
 def ingest(target: Path, store: str = "memory/vector_store") -> int:
@@ -29,10 +18,11 @@ def ingest(target: Path, store: str = "memory/vector_store") -> int:
     )
     docs = []
     for f in files:
-        docs.extend(_loader_for(f).load())
+        docs.extend(_loader_for(f))
     vs = get_vectorstore(store)
-    vs.add_documents(docs)
-    vs.save_local(store)
+    from modular_ai_agent.memory.memory_setup import add_documents as _add_docs
+
+    _add_docs(vs, docs, store)
     return len(docs)
 
 
