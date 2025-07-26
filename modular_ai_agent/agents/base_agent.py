@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 
-
-
 from modular_ai_agent.tools import (
     get_math_tool,
     get_memory_tool,
@@ -24,6 +22,7 @@ def get_llm():
     """Return OllamaLLM if available, otherwise a dummy LLM."""
     try:
         from langchain_ollama import OllamaLLM
+
         return OllamaLLM(model="llama3")
     except Exception:
         return DummyLLM()
