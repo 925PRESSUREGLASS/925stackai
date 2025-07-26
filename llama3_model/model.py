@@ -1,8 +1,9 @@
 import math
+from typing import Optional
+
 import torch
 from torch import nn
 from transformers import AutoTokenizer
-from typing import Optional
 
 
 class Llama3QuoteModel(nn.Module):

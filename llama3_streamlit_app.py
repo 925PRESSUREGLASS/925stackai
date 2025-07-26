@@ -1,4 +1,5 @@
 import streamlit as st
+
 from llama3_model.model import Llama3QuoteModel
 
 st.set_page_config(page_title="Llama3 Quoting Assistant", layout="centered")

@@ -14,10 +14,10 @@ import sys
 from pathlib import Path
 from typing import List
 
-from pydantic import BaseModel, PositiveFloat, ValidationError
 from langchain.schema import Document
+from pydantic import BaseModel, PositiveFloat, ValidationError
 
-from .memory_setup import get_vectorstore, add_documents
+from .memory_setup import add_documents, get_vectorstore
 
 
 class PricingRecord(BaseModel):

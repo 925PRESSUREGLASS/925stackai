@@ -1,8 +1,9 @@
-import sys
 import os
+import sys
 from pathlib import Path
-from langchain_community.vectorstores import FAISS
+
 from langchain_community.embeddings import FakeEmbeddings, OpenAIEmbeddings
+from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 
 if __name__ == "__main__":
@@ -16,7 +17,9 @@ if __name__ == "__main__":
         path = Path("faiss_test_store2")
         if (path / "index.faiss").exists():
             print("Loading existing FAISS index...")
-            store = FAISS.load_local(str(path), embeddings, allow_dangerous_deserialization=True)
+            store = FAISS.load_local(
+                str(path), embeddings, allow_dangerous_deserialization=True
+            )
         else:
             print("Creating new FAISS index...")
             path.mkdir(parents=True, exist_ok=True)

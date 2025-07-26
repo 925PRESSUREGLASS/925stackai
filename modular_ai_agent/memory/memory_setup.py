@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Iterable, List, Any
+from typing import Any, Iterable, List
 
 from langchain_community.embeddings import FakeEmbeddings
 from langchain_community.vectorstores import FAISS
