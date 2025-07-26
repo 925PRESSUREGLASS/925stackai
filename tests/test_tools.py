@@ -1,5 +1,6 @@
-from modular_ai_agent.tools import get_search_tool, get_math_tool
 from langchain_core.tools import Tool
+
+from modular_ai_agent.tools import get_math_tool, get_search_tool
 
 
 def test_get_search_tool() -> None:

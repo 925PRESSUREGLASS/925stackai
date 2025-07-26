@@ -1,14 +1,13 @@
 from __future__ import annotations
+
+import argparse
 from pathlib import Path
 from typing import Any, List
-import argparse
 
-from langchain_community.document_loaders import (
-    PyPDFLoader,
-    CSVLoader,
-    UnstructuredMarkdownLoader,
-    TextLoader,
-)
+from langchain_community.document_loaders import (CSVLoader, PyPDFLoader,
+                                                  TextLoader,
+                                                  UnstructuredMarkdownLoader)
+
 from modular_ai_agent.memory.memory_setup import get_vectorstore
 
 

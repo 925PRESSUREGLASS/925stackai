@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+
 from llama3_model.data_loader import QuoteDataLoader
 
 

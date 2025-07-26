@@ -4,13 +4,13 @@ and returns STRICT JSON {"customer", "items", "total"}.
 """
 
 import json
-from typing import Any, Dict, Callable
+from typing import Any, Callable, Dict
+
 from langchain.memory import ConversationBufferMemory
 
-from modular_ai_agent.agents.base_agent import get_llm
-
+from logic.job_parser import parse_followup, parse_prompt
 from logic.pricing_rules import calculate_price
-from logic.job_parser import parse_prompt, parse_followup
+from modular_ai_agent.agents.base_agent import get_llm
 
 
 class QuoteAgent:

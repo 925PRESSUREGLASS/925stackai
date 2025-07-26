@@ -1,8 +1,9 @@
 """Manual automation script (skipped in CI)."""
 
-import requests
 import time
+
 import pytest
+import requests
 
 pytest.skip("manual script", allow_module_level=True)
 

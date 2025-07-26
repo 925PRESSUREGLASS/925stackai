@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 STORE_PATH = Path(__file__).parent.parent / "data" / "quotes.jsonl"
 STORE_PATH.parent.mkdir(parents=True, exist_ok=True)
