@@ -29,12 +29,25 @@ def main() -> None:
 
     left, right = st.columns(2)
 
+
     def generate_and_clear():
         prompt = st.session_state.get("prompt_input", "")
         if prompt.strip():
             output = run_quote(prompt.strip())
             data = parse_quote_output(output)
             st.session_state.history.append({"prompt": prompt.strip(), "data": data})
+            # --- Store prompt and quote in data/quotes.jsonl and vector store ---
+            import json
+            from vector_store.quote_embedder import QuoteVectorStore
+            quote_entry = {"prompt": prompt.strip(), "result": data}
+            quotes_path = Path("data/quotes.jsonl")
+            quotes_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(quotes_path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(quote_entry, ensure_ascii=False) + "\n")
+            # Add to vector store
+            vs = QuoteVectorStore(data_path=str(quotes_path))
+            vs.build_index()
+        # Clear the input after quote generation
         st.session_state["prompt_input"] = ""
 
     with left:
@@ -65,17 +78,14 @@ def main() -> None:
             st.write(f"GPU info unavailable: {e}")
 
         st.subheader("Vector Store Stats")
-        vector_path = Path("vector_store")
-        if (vector_path / "index.faiss").exists():
-            try:
-                store = FAISS.load_local(
-                    str(vector_path), None, allow_dangerous_deserialization=True
-                )
-                st.write(f"Number of vectors: {len(store.index_to_docstore_id)}")
-            except Exception as e:
-                st.write(f"Could not load vector store: {e}")
-        else:
-            st.write("No vector store found.")
+        try:
+            from vector_store.quote_embedder import QuoteVectorStore
+            quotes_path = Path("data/quotes.jsonl")
+            vs = QuoteVectorStore(data_path=str(quotes_path))
+            count = vs.count()
+            st.write(f"Number of vectors: {count}")
+        except Exception as e:
+            st.write(f"Could not load vector store: {e}")
 
     with right:
         st.header("Quote")
