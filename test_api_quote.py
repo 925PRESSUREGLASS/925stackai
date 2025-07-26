@@ -1,5 +1,5 @@
-import requests
 import pytest
+import requests
 
 pytest.skip("manual API test", allow_module_level=True)
 
