@@ -3,17 +3,29 @@ from typing import List, Dict, Any
 import os
 import json
 from langchain.embeddings import HuggingFaceEmbeddings
+try:
+    from langchain.embeddings import OpenAIEmbeddings
+except ImportError:
+    OpenAIEmbeddings = None
 import chromadb
 from chromadb.config import Settings
 from chromadb.utils import embedding_functions
 
+
+from typing import Optional
+
 class QuoteVectorStore:
-    def __init__(self, data_path: str = "data/quotes.jsonl", persist_dir: str = "vector_store/chroma_index"):
+    def __init__(self, data_path: str = "data/quotes.jsonl", persist_dir: str = "vector_store/chroma_index", embedding_type: Optional[str] = None):
         self.data_path = data_path
         self.persist_dir = persist_dir
         self.client = chromadb.PersistentClient(path=self.persist_dir, settings=Settings(allow_reset=True))
         self.collection = self.client.get_or_create_collection("quotes")
-        self.embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        # Choose embedding model: 'huggingface' (default, local) or 'openai' (API)
+        embedding_type = embedding_type or os.environ.get("QUOTE_EMBEDDING_TYPE", "huggingface").lower()
+        if embedding_type == "openai" and OpenAIEmbeddings is not None:
+            self.embedding_model = OpenAIEmbeddings()
+        else:
+            self.embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
     def build_index(self) -> None:
         if not os.path.exists(self.data_path):
