@@ -1,6 +1,7 @@
 import sys
-from langchain_community.vectorstores import FAISS
+
 from langchain_community.embeddings import FakeEmbeddings
+from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 
 if __name__ == "__main__":

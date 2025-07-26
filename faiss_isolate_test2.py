@@ -1,8 +1,9 @@
-import sys
 import os
+import sys
 from pathlib import Path
-from langchain_community.vectorstores import FAISS
+
 from langchain_community.embeddings import FakeEmbeddings, OpenAIEmbeddings
+from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 
 if __name__ == "__main__":

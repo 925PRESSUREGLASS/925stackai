@@ -3,12 +3,6 @@
 from __future__ import annotations
 
 
-from modular_ai_agent.tools import (
-    get_math_tool,
-    get_memory_tool,
-    get_search_tool,
-)
-
 
 class DummyLLM:
     """Fallback LLM that simply echoes the prompt."""
