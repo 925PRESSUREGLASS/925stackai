@@ -23,18 +23,9 @@ class DummyLLM:
         return prompt
 
 
-def get_llm(model: str = "gpt-4o-mini"):
-    """Return an LLM instance.
-
-    If an OpenAI API key is configured, ``ChatOpenAI`` will be used.
-    Otherwise, try to use Ollama with llama3. If Ollama is not available, fallback to DummyLLM.
-    """
-    if os.getenv("OPENAI_API_KEY"):
-        return ChatOpenAI(model_name=model, temperature=0)  # type: ignore[call-arg]
-    try:
-        return Ollama(model="llama3")
-    except Exception:
-        return DummyLLM()
+def get_llm():
+    from langchain_community.llms import Ollama
+    return Ollama(model="llama3")
 
 
 # Default tools available to the agent
