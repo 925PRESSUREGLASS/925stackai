@@ -21,10 +21,10 @@ class DummyLLM:
 
 
 def get_llm():
-    """Return Ollama if available, otherwise a dummy LLM."""
+    """Return OllamaLLM if available, otherwise a dummy LLM."""
     try:
-        from langchain_community.llms import Ollama
-        return Ollama(model="llama3")
+        from langchain_ollama import OllamaLLM
+        return OllamaLLM(model="llama3")
     except Exception:
         return DummyLLM()
 
@@ -37,7 +37,7 @@ def run_agent(prompt: str) -> str:
     """Run a prompt through the agent and return the result."""
     llm = get_llm()
     try:
-        return llm.predict(prompt)
+        return llm.invoke(prompt)
     except Exception:
         return DummyLLM().predict(prompt)
 
