@@ -1,8 +1,8 @@
-
 from typing import List, Dict, Any
 import os
 import json
 from langchain.embeddings import HuggingFaceEmbeddings
+
 try:
     from langchain.embeddings import OpenAIEmbeddings
 except ImportError:
@@ -14,14 +14,25 @@ from chromadb.utils import embedding_functions
 
 from typing import Optional
 
+
 class QuoteVectorStore:
-    def __init__(self, data_path: str = "data/quotes.jsonl", persist_dir: str = "vector_store/chroma_index", embedding_type: Optional[str] = None):
+    def __init__(
+        self,
+        data_path: str = "data/quotes.jsonl",
+        persist_dir: str = "vector_store/chroma_index",
+        embedding_type: Optional[str] = None,
+    ):
         self.data_path = data_path
         self.persist_dir = persist_dir
-        self.client = chromadb.PersistentClient(path=self.persist_dir, settings=Settings(allow_reset=True))
+        self.client = chromadb.PersistentClient(
+            path=self.persist_dir, settings=Settings(allow_reset=True)
+        )
         self.collection = self.client.get_or_create_collection("quotes")
         # Choose embedding model: 'huggingface' (default, local) or 'openai' (API)
-        embedding_type = embedding_type or os.environ.get("QUOTE_EMBEDDING_TYPE", "huggingface").lower()
+        embedding_type = (
+            embedding_type
+            or os.environ.get("QUOTE_EMBEDDING_TYPE", "huggingface").lower()
+        )
         if embedding_type == "openai" and OpenAIEmbeddings is not None:
             self.embedding_model = OpenAIEmbeddings()
         else:
@@ -36,20 +47,20 @@ class QuoteVectorStore:
         self.collection.delete(where={})
         for i, quote in enumerate(quotes):
             content = quote.get("content") or quote.get("prompt") or str(quote)
-            metadata = {"quote_id": quote.get("id", str(i)), **{k: v for k, v in quote.items() if k != "content"}}
+            metadata = {
+                "quote_id": quote.get("id", str(i)),
+                **{k: v for k, v in quote.items() if k != "content"},
+            }
             self.collection.add(
                 documents=[content],
                 metadatas=[metadata],
-                ids=[str(metadata["quote_id"])]
+                ids=[str(metadata["quote_id"])],
             )
 
     def query(self, prompt: str, top_k: int = 3) -> List[Dict[str, Any]]:
         # Compute embedding using HuggingFaceEmbeddings (offline)
         embedding = self.embedding_model.embed_query(prompt)
-        results = self.collection.query(
-            query_embeddings=[embedding],
-            n_results=top_k
-        )
+        results = self.collection.query(query_embeddings=[embedding], n_results=top_k)
         matches = []
         docs = results.get("documents")
         metas = results.get("metadatas")
@@ -59,8 +70,5 @@ class QuoteVectorStore:
             metas = metas[0]
             ids = ids[0]
             for doc, meta, id_ in zip(docs, metas, ids):
-                matches.append({
-                    "content": doc,
-                    "metadata": meta
-                })
+                matches.append({"content": doc, "metadata": meta})
         return matches

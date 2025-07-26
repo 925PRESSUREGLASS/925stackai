@@ -25,6 +25,7 @@ class DummyLLM:
 
 def get_llm():
     from langchain_community.llms import Ollama
+
     return Ollama(model="llama3")
 
 

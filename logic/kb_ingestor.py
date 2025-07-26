@@ -11,6 +11,7 @@ from langchain_community.document_loaders import (
 )
 from modular_ai_agent.memory.memory_setup import get_vectorstore
 
+
 def _loader_for(path: Path) -> Any:
     suf = path.suffix.lower()
     if suf == ".pdf":
@@ -21,8 +22,11 @@ def _loader_for(path: Path) -> Any:
         return UnstructuredMarkdownLoader(str(path))
     return TextLoader(str(path))
 
+
 def ingest(target: Path, store: str = "memory/vector_store") -> int:
-    files: List[Path] = [p for p in target.rglob("*") if p.is_file()] if target.is_dir() else [target]
+    files: List[Path] = (
+        [p for p in target.rglob("*") if p.is_file()] if target.is_dir() else [target]
+    )
     docs = []
     for f in files:
         docs.extend(_loader_for(f).load())
@@ -30,6 +34,7 @@ def ingest(target: Path, store: str = "memory/vector_store") -> int:
     vs.add_documents(docs)
     vs.save_local(store)
     return len(docs)
+
 
 def ingest_cli() -> None:
     parser = argparse.ArgumentParser(description="Ingest files into FAISS store")

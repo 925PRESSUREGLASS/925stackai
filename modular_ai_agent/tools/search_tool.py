@@ -10,6 +10,7 @@ from langchain_core.tools import Tool
 search_run_cls: Any = None
 try:
     from langchain_community.tools import DuckDuckGoSearchRun
+
     search_run_cls = DuckDuckGoSearchRun
 except Exception:  # pragma: no cover - optional dependency
     pass

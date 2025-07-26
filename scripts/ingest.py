@@ -1,5 +1,3 @@
-def _loader_for(path: Path) -> Any:
-def main() -> None:
 #!/usr/bin/env python3
 """
 CLI helper that ingests files or folders into the FAISS vector store.

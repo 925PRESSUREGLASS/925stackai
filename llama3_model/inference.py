@@ -4,9 +4,12 @@ from typing import Any, Dict, Union
 from llama3_model.model import Llama3QuoteModel
 from llama3_model.utils import condition_logic, quote_formatter
 
-def generate_quote(input_data: Union[str, Dict[str, Any]],
-                   model: Llama3QuoteModel,
-                   confidence_threshold: float = 0.1) -> str:
+
+def generate_quote(
+    input_data: Union[str, Dict[str, Any]],
+    model: Llama3QuoteModel,
+    confidence_threshold: float = 0.1,
+) -> str:
     """
     Generate a quote for the given job input using the model, with rule-based fallback.
     :param input_data: Job description (dict of fields or raw text prompt).
@@ -17,7 +20,11 @@ def generate_quote(input_data: Union[str, Dict[str, Any]],
     structured_input = input_data
     if isinstance(input_data, str):
         structured_input = condition_logic.parse_input(input_data)
-    prompt = json.dumps(structured_input) if isinstance(structured_input, dict) else str(structured_input)
+    prompt = (
+        json.dumps(structured_input)
+        if isinstance(structured_input, dict)
+        else str(structured_input)
+    )
     generated_text = model.generate_text(prompt)
     model_output = {}
     try:
@@ -45,7 +52,9 @@ def generate_quote(input_data: Union[str, Dict[str, Any]],
             final_data["surcharges"] = rule_result["surcharges"]
     customer_name = ""
     if isinstance(input_data, dict):
-        customer_name = input_data.get("customer") or input_data.get("customer_name") or ""
+        customer_name = (
+            input_data.get("customer") or input_data.get("customer_name") or ""
+        )
     if not customer_name:
         customer_name = "Unknown Customer"
     final_data["customer"] = customer_name

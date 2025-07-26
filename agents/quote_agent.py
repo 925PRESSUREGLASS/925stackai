@@ -16,7 +16,6 @@ def build_quote_agent() -> Callable[[str], str]:
     # For now, just a passthrough using pricing_rules and tools
     llm = get_llm()
 
-
     def agent(prompt: str) -> str:
         # Parse the prompt into a scope dict
         scope = parse_prompt(prompt)
