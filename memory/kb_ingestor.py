@@ -90,8 +90,8 @@ def ingest_cli() -> None:
     )
 
     args = parser.parse_args()
-    count = ingest(args.target, args.store)
-    print(f"\u2705 Ingested {count} document chunks into {args.store}")
+    file_count, chunk_count = ingest(args.target, args.store)
+    print(f"\u2705 Ingested {chunk_count} document chunks from {file_count} files into {args.store}")
 
 
 if __name__ == "__main__":
