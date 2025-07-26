@@ -1,6 +1,7 @@
 import json
-from llama3_model.model import Llama3QuoteModel
+
 from llama3_model.inference import generate_quote
+from llama3_model.model import Llama3QuoteModel
 from llama3_model.utils.condition_logic import apply_conditions
 
 

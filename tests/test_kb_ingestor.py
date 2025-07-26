@@ -1,7 +1,9 @@
 from __future__ import annotations
+
+import tempfile
 from pathlib import Path
 from typing import Any
-import tempfile
+
 from logic.kb_ingestor import ingest
 
 
