@@ -1,7 +1,8 @@
-
 from __future__ import annotations
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 import re
+
+
 # Natural language prompt parser
 def parse_prompt(prompt: str) -> Dict[str, Any]:
     """
@@ -44,6 +45,31 @@ def parse_prompt(prompt: str) -> Dict[str, Any]:
     return result
 
 
+def parse_followup(prompt: str, last_scope: Dict[str, Any]) -> Dict[str, Any]:
+    """Merge follow-up instructions into ``last_scope``."""
+    updates = parse_prompt(prompt)
+    merged = dict(last_scope)
+
+    if updates.get("service"):
+        merged["service"] = updates["service"]
+
+    if re.search(r"\d", prompt):
+        merged["qty"] = updates.get("qty", merged.get("qty", 1))
+
+    if "large" in prompt:
+        merged["size"] = updates.get("size", merged.get("size", ""))
+
+    if re.search(r"(storey|story|floor)", prompt):
+        merged["storey"] = updates.get("storey", merged.get("storey", 1))
+
+    if updates.get("surcharges"):
+        sur = merged.get("surcharges", {}).copy()
+        sur.update(updates["surcharges"])
+        merged["surcharges"] = sur
+
+    return merged
+
+
 def parse_job(data: Dict[str, Any]) -> Dict[str, Any]:
     """Parse a job dictionary and return a normalized job dict."""
     # Example: normalize keys, validate fields, etc.
@@ -55,7 +81,7 @@ def parse_job(data: Dict[str, Any]) -> Dict[str, Any]:
     job["surcharges"] = data.get("surcharges", {})
     return job
 
+
 # Example usage for mypy strict compliance
 def parse_jobs(data_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return [parse_job(d) for d in data_list]
-
