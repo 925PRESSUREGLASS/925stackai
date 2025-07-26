@@ -21,7 +21,7 @@ def test_cli_ingest_and_search() -> None:
         env = dict(os.environ)
         env["PYTHONPATH"] = str(Path(__file__).resolve().parents[1])
         subprocess.run(
-            [sys.executable, "scripts/ingest.py", str(docs_dir), "--store", str(store_path)],
+            [sys.executable, str(Path(__file__).resolve().parents[1] / "scripts" / "ingest.py"), str(docs_dir), "--store", str(store_path)],
             check=True,
             cwd=Path(__file__).resolve().parents[1],
             env=env,
