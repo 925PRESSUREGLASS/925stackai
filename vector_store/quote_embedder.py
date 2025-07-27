@@ -1,14 +1,10 @@
+
 import json
 import os
 from typing import Any, Dict, List, Optional
 
-from langchain.embeddings import HuggingFaceEmbeddings
-
-try:
-    from langchain.embeddings import OpenAIEmbeddings
-except ImportError:
-    OpenAIEmbeddings = None
-# Removed redundant import of Optional
+from langchain_community.embeddings import HuggingFaceEmbeddings
+OpenAIEmbeddings = None
 
 import chromadb
 from chromadb.config import Settings
@@ -45,15 +41,13 @@ class QuoteVectorStore:
         if embedding_type == "openai" and OpenAIEmbeddings is not None:
             self.embedding_model = OpenAIEmbeddings()
         else:
-            # Patch: Avoid meta tensor error by loading SentenceTransformer directly and setting device after instantiation
-            from langchain_community.embeddings.huggingface import HuggingFaceEmbeddings
+            # Use langchain_huggingface for HuggingFaceEmbeddings (future-proof)
             import sentence_transformers
             model_name = "all-MiniLM-L6-v2"
             try:
                 model = sentence_transformers.SentenceTransformer(model_name)
                 model.to("cpu")
                 self.embedding_model = HuggingFaceEmbeddings(model_name=model_name, model_kwargs={"device": "cpu"})
-                self.embedding_model.client = model
             except Exception as e:
                 print(f"Error loading HuggingFaceEmbeddings: {e}")
                 raise
