@@ -1,5 +1,6 @@
 langchain>=0.2.0
 langchain-openai
+langchain-community
 faiss-cpu
 unstructured
 tiktoken
@@ -13,3 +14,4 @@ python-docx
 pgsql
 pydantic
 streamlit>=1.25
+requests
