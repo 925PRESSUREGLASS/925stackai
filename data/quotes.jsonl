@@ -21,3 +21,4 @@
 {"prompt": "10 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
 {"prompt": "10 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
 {"prompt": "`20 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 20, "unit_price": 4.0, "size": "", "subtotal": 80.0}], "total": 80.0}}
+{"prompt": "10 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
