@@ -13,8 +13,23 @@ def parse_prompt(prompt: str) -> Dict[str, Any]:
     prompt = prompt.lower()
     result: Dict[str, Any] = {}
 
-    # Service detection
-    if "window" in prompt:
+
+    # Service detection (expanded for new window types)
+    if "arched" in prompt:
+        result["service"] = "arched_window"
+    elif "triple-glazed" in prompt or "triple glazed" in prompt:
+        result["service"] = "triple_glazed"
+    elif "custom shape" in prompt or "custom window" in prompt:
+        result["service"] = "custom_shape"
+    elif "tinted" in prompt or "reflective" in prompt:
+        result["service"] = "tinted_reflective"
+    elif "security" in prompt or "storm window" in prompt:
+        result["service"] = "security_storm"
+    elif "glass block" in prompt:
+        result["service"] = "glass_block"
+    elif "greenhouse" in prompt or "conservatory" in prompt:
+        result["service"] = "greenhouse"
+    elif "window" in prompt:
         result["service"] = "window"
     elif "pressure" in prompt or "power wash" in prompt:
         result["service"] = "pressure"
