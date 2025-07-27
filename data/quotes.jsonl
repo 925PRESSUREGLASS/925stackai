@@ -16,3 +16,8 @@
 {"prompt": "100 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 100, "unit_price": 4.0, "size": "", "subtotal": 400.0}], "total": 400.0}}
 {"prompt": "150 extra large windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 150, "unit_price": 4.0, "size": "large", "subtotal": 750.0}], "total": 750.0}}
 {"prompt": "1 window", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 1, "unit_price": 4.0, "size": "", "subtotal": 4.0}], "total": 4.0}}
+{"prompt": "10 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
+{"prompt": "10 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
+{"prompt": "10 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
+{"prompt": "10 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
+{"prompt": "`20 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 20, "unit_price": 4.0, "size": "", "subtotal": 80.0}], "total": 80.0}}

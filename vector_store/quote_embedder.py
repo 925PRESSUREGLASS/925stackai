@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from langchain.embeddings import HuggingFaceEmbeddings
 
@@ -45,7 +45,10 @@ class QuoteVectorStore:
         if embedding_type == "openai" and OpenAIEmbeddings is not None:
             self.embedding_model = OpenAIEmbeddings()
         else:
-            self.embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+            self.embedding_model = HuggingFaceEmbeddings(
+                model_name="all-MiniLM-L6-v2",
+                model_kwargs={"device": "cpu"}
+            )
 
     def build_index(self) -> None:
         if not os.path.exists(self.data_path):
