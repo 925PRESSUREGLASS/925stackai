@@ -20,7 +20,7 @@ class QuoteAgent:
         self.llm = get_llm()
         # Updated for LangChain 0.3.1+ memory API
         # Updated for LangChain 0.3.1+ memory API (see migration guide)
-        self.memory = ConversationBufferMemory()
+        self.memory = ConversationBufferMemory()  # TODO: See LangChain memory migration guide for future updates
         self._last_scope: Dict[str, Any] | None = None
 
     def __call__(self, prompt: str) -> str:
@@ -59,3 +59,20 @@ def run_quote(prompt: str) -> str:
     data = json.loads(output)
     assert all(k in data for k in ("customer", "items", "total"))
     return output
+
+
+# --- CLI chat interface ---
+if __name__ == "__main__":
+    print("Quote Agent CLI Chat. Type 'exit' to quit.\n")
+    agent = build_quote_agent()
+    while True:
+        try:
+            prompt = input("You: ")
+            if prompt.strip().lower() in {"exit", "quit"}:
+                print("Exiting.")
+                break
+            response = agent(prompt)
+            print(f"Agent: {response}\n")
+        except (KeyboardInterrupt, EOFError):
+            print("\nExiting.")
+            break
