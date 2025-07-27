@@ -132,9 +132,14 @@ def main() -> None:
             quotes_path = Path("data/quotes.jsonl")
             vs = QuoteVectorStore(data_path=str(quotes_path))
             count = vs.count()
-            st.write(f"Number of vectors: {count}")
+            if count == 0:
+                st.warning("Vector store is empty or failed to load. Check if 'data/quotes.jsonl' exists and is populated.")
+            else:
+                st.write(f"Number of vectors: {count}")
         except Exception as e:
-            st.write(f"Could not load vector store: {e}")
+            import traceback
+            st.error(f"Could not load vector store: {e}")
+            st.code(traceback.format_exc(), language="python")
 
     with right:
         st.header("Quote")
