@@ -45,10 +45,18 @@ class QuoteVectorStore:
         if embedding_type == "openai" and OpenAIEmbeddings is not None:
             self.embedding_model = OpenAIEmbeddings()
         else:
-            self.embedding_model = HuggingFaceEmbeddings(
-                model_name="all-MiniLM-L6-v2",
-                model_kwargs={"device": "cpu"}
-            )
+            # Patch: Avoid meta tensor error by loading SentenceTransformer directly and setting device after instantiation
+            from langchain_community.embeddings.huggingface import HuggingFaceEmbeddings
+            import sentence_transformers
+            model_name = "all-MiniLM-L6-v2"
+            try:
+                model = sentence_transformers.SentenceTransformer(model_name)
+                model.to("cpu")
+                self.embedding_model = HuggingFaceEmbeddings(model_name=model_name, model_kwargs={"device": "cpu"})
+                self.embedding_model.client = model
+            except Exception as e:
+                print(f"Error loading HuggingFaceEmbeddings: {e}")
+                raise
 
     def build_index(self) -> None:
         if not os.path.exists(self.data_path):
