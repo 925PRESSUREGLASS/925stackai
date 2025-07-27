@@ -1,3 +1,5 @@
+import argparse
+import sys
 import typer
 from dotenv import load_dotenv
 
@@ -18,5 +20,15 @@ def run() -> None:
     typer.echo("Agent placeholder")
 
 
-if __name__ == "__main__":
+def cli() -> None:
+    """CLI entrypoint wrapping the Typer application."""
+    parser = argparse.ArgumentParser(description="Modular AI Agent")
+    parser.add_argument("args", nargs=argparse.REMAINDER)
+    args = parser.parse_args()
+    sys.argv = [sys.argv[0]] + args.args
     app()
+
+
+if __name__ == "__main__":
+    cli()
+

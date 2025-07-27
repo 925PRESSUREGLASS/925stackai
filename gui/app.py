@@ -1,6 +1,7 @@
 
 import os
 import sys
+import argparse
 from pathlib import Path
 
 import streamlit as st
@@ -95,5 +96,14 @@ def main() -> None:
             st.write("Enter a job description to generate a quote.")
 
 
-if __name__ == "__main__":
+def cli() -> None:
+    """CLI wrapper to run the Streamlit GUI."""
+    parser = argparse.ArgumentParser(description="Run Streamlit GUI")
+    parser.add_argument("--port", type=int, default=8501)
+    args = parser.parse_args()
+    os.environ.setdefault("STREAMLIT_SERVER_PORT", str(args.port))
     main()
+
+
+if __name__ == "__main__":
+    cli()

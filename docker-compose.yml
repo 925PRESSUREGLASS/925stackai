@@ -1,23 +1,38 @@
-version: '3.9'
-services:
-  backend:
-    build: .
-    command: uvicorn app_quote_api:app --host 0.0.0.0 --port 8000 --reload
-    volumes:
-      - .:/app
-    env_file:
-      - .env
-    ports:
-      - '8000:8000'
+version: "3.9"
 
-  frontend:
+services:
+  quote_api:
     build: .
-    command: streamlit run gui/app.py --server.port 8501 --server.headless true
+    command: >-
+      uvicorn app_quote_api:app --host 0.0.0.0 --port ${API_PORT:-8000} --reload
     volumes:
       - .:/app
+      - ./memory/vector_store:/app/memory/vector_store
     env_file:
       - .env
     ports:
-      - '8501:8501'
+      - "8000:8000"
+
+  gui:
+    build: .
+    command: >-
+      streamlit run gui/app.py --server.port ${GUI_PORT:-8501}
+      --server.headless true
+    volumes:
+      - .:/app
+      - ./memory/vector_store:/app/memory/vector_store
+    env_file:
+      - .env
     depends_on:
-      - backend
+      - quote_api
+    ports:
+      - "8501:8501"
+
+  vector_store:
+    image: busybox
+    volumes:
+      - ./memory/vector_store:/data
+    command: tail -f /dev/null
+
+volumes:
+  vector_store:
