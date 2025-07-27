@@ -8,6 +8,8 @@ from typing import Any, Callable, Dict
 
 from langchain.memory import ConversationBufferMemory
 
+from .weblink_agent import index_issue, query_related
+
 from logic.job_parser import parse_followup, parse_prompt
 from logic.pricing_rules import calculate_price
 from modular_ai_agent.agents.base_agent import get_llm
@@ -22,6 +24,7 @@ class QuoteAgent:
         # Updated for LangChain 0.3.1+ memory API (see migration guide)
         self.memory = ConversationBufferMemory()
         self._last_scope: Dict[str, Any] | None = None
+        self._last_issue: Dict[str, Any] | None = None
 
     def __call__(self, prompt: str) -> str:
         if self._last_scope is None:
@@ -29,6 +32,11 @@ class QuoteAgent:
         else:
             scope = parse_followup(prompt, self._last_scope)
         self._last_scope = scope
+
+        issue = {"description": prompt}
+        index_issue(issue)
+        issue["related"] = query_related(issue["description"])
+        self._last_issue = issue
 
         self.memory.chat_memory.add_user_message(prompt)
         customer = "Test Customer"
