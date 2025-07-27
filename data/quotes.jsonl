@@ -21,3 +21,15 @@
 {"prompt": "10 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
 {"prompt": "10 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
 {"prompt": "`20 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 20, "unit_price": 4.0, "size": "", "subtotal": 80.0}], "total": 80.0}}
+{"prompt": "10 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
+{"prompt": "10 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
+{"prompt": "windows 10", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
+{"prompt": "10 lareg windows 2 small wiondows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
+{"prompt": "10 windows small", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
+{"prompt": "10 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
+{"prompt": "10 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
+{"prompt": "10 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
+{"prompt": "10 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
+{"prompt": "10 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
+{"prompt": "10 windows", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 10, "unit_price": 4.0, "size": "", "subtotal": 40.0}], "total": 40.0}}
+{"prompt": "\"I need a quote for cleaning 120 windows at 123 Main St, including 30 floor-to-ceiling glass panels, 60 standard double-hung windows, and 30 skylights. Some windows require lift access. We need service next week, and please include after-hours pricing and travel charges for outside your normal area.\"\n\nHow the GUI Agent Handles This:", "result": {"customer": "Test Customer", "items": [{"service": "window", "qty": 120, "unit_price": 4.0, "size": "", "subtotal": 480.0}], "total": 520.0}}
