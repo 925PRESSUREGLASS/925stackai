@@ -20,10 +20,6 @@ class Orchestrator:
 
         # very simple log
         log_file = _LOG_DIR / "run_history.log"
-        log_file.write_text(
-            f"PROMPT: {user_prompt}\nRESPONSE: {response}\n\n",
-            encoding="utf-8",
-            errors="ignore",
-            append=True,
-        )
+        with open(log_file, 'a', encoding='utf-8', errors='ignore') as log:
+            log.write(f"PROMPT: {user_prompt}\nRESPONSE: {response}\n\n")
         return response
