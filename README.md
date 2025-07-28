@@ -2,6 +2,11 @@
 
 A new project repository.
 
+## Wire-up Branch (wireup-1.1)
+
+This branch wires together the core quoting pipeline (CLI → prompt manager → quoting agent) and adds
+stubs for future specification and evaluation modules. No new features are introduced.
+
 ## Quick Start
 
 1. Copy `.env.example` to `.env` and fill in any API keys.
