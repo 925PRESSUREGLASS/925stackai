@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 from agents.quote_agent import run_quote
 from vector_store.quote_embedder import QuoteVectorStore
+from core.demo_spec_grading import grade_quote_response
 
 app = FastAPI(title="Quote API")
 
@@ -51,6 +52,9 @@ def get_quote(request: QuoteRequest):
         # Ensure memory_result is always present in response (None if missing)
         if "memory_result" not in data:
             data["memory_result"] = None
+        # --- Spec grading ---
+        grading = grade_quote_response(request.prompt, output)
+        data["spec_grading"] = grading
         return data
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

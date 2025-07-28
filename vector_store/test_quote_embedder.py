@@ -1,4 +1,4 @@
-from quote_embedder import QuoteVectorStore
+from vector_store.quote_embedder import QuoteVectorStore
 
 # Build the index (if not already built)
 store = QuoteVectorStore()

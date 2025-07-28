@@ -1,0 +1,15 @@
+{
+  "quote_generation": {
+    "rules": {
+      "quote_wrapped": "^\".*\"$",
+      "has_source": "^— .+",
+      "char_limit": 240
+    },
+    "tests": [
+      {
+        "prompt": "Provide a motivational quote about learning.",
+        "expect_contains": "Analysis"
+      }
+    ]
+  }
+}

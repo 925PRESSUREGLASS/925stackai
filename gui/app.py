@@ -67,11 +67,14 @@ def main() -> None:
         if prompt.strip():
             output = run_quote(prompt.strip())
             data = parse_quote_output(output)
-            st.session_state.history.append({"prompt": prompt.strip(), "data": data})
+            # --- Spec grading ---
+            from core.demo_spec_grading import grade_quote_response
+            grading = grade_quote_response(prompt.strip(), output)
+            st.session_state.history.append({"prompt": prompt.strip(), "data": data, "grading": grading})
             # --- Store prompt and quote in data/quotes.jsonl and vector store ---
             import json
             from vector_store.quote_embedder import QuoteVectorStore
-            quote_entry = {"prompt": prompt.strip(), "result": data}
+            quote_entry = {"prompt": prompt.strip(), "result": data, "grading": grading}
             quotes_path = Path("data/quotes.jsonl")
             quotes_path.parent.mkdir(parents=True, exist_ok=True)
             with open(quotes_path, "a", encoding="utf-8") as f:
@@ -98,14 +101,27 @@ def main() -> None:
             else:
                 output = run_quote(user_input.strip())
                 data = parse_quote_output(output)
-                response = f"Quote total: ${data.get('total', 0)}"
-                # Optionally, store in old history for right column quote display
+                from core.demo_spec_grading import grade_quote_response
+                grading = grade_quote_response(user_input.strip(), output)
+                # --- Custom spec grading display ---
+                score = grading['score']
+                passed = grading['passed']
+                failures = grading['failures']
+                badge_color = 'green' if score == 1.0 else ('orange' if score >= 0.67 else 'red')
+                badge = f"<span style='background-color:{badge_color};color:white;padding:4px 10px;border-radius:8px;font-weight:bold;'>Spec Score: {score}</span>"
+                passed_str = ', '.join(passed) if passed else 'None'
+                failed_str = ', '.join(failures) if failures else 'None'
+                tooltip = "<span title='Passed: {} | Failed: {}'>ℹ️</span>".format(passed_str, failed_str)
+                assistant_msg = f"Quote total: ${data.get('total', 0)}<br>{badge} {tooltip}<br><b>Passed:</b> {passed_str}<br><b>Failed:</b> {failed_str}"
+                st.session_state['chat_history'].append({
+                    'user': user_input.strip(),
+                    'assistant': assistant_msg
+                })
                 st.session_state.history.append({"prompt": user_input.strip(), "data": data})
-            st.session_state['chat_history'].append({'user': user_input, 'assistant': response})
 
         for exchange in st.session_state['chat_history']:
             st.chat_message('user').write(exchange['user'])
-            st.chat_message('assistant').write(exchange['assistant'])
+            st.chat_message('assistant').markdown(exchange['assistant'], unsafe_allow_html=True)
 
         st.subheader("System Resource Usage")
         cpu = psutil.cpu_percent(interval=0.5)
