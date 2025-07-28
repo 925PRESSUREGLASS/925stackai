@@ -2,21 +2,19 @@ import json
 import os
 from typing import Any, Dict, List, Optional
 
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 
 try:
-    from langchain.embeddings import OpenAIEmbeddings
+    from langchain_openai import OpenAIEmbeddings
 except ImportError:
     OpenAIEmbeddings = None
 # Removed redundant import of Optional
 
 import chromadb
 from chromadb.config import Settings
-from chromadb.utils import embedding_functions
 
 
 class QuoteVectorStore:
-
 
     def count(self) -> int:
         """Return the number of vectors in the collection."""
@@ -25,6 +23,7 @@ class QuoteVectorStore:
             return info if isinstance(info, int) else 0
         except Exception:
             return 0
+
     def __init__(
         self,
         data_path: str = "data/quotes.jsonl",
@@ -46,13 +45,15 @@ class QuoteVectorStore:
             self.embedding_model = OpenAIEmbeddings()
         else:
             # Patch: Avoid meta tensor error by loading SentenceTransformer directly and setting device after instantiation
-            from langchain_community.embeddings.huggingface import HuggingFaceEmbeddings
             import sentence_transformers
+
             model_name = "all-MiniLM-L6-v2"
             try:
                 model = sentence_transformers.SentenceTransformer(model_name)
                 model.to("cpu")
-                self.embedding_model = HuggingFaceEmbeddings(model_name=model_name, model_kwargs={"device": "cpu"})
+                self.embedding_model = HuggingFaceEmbeddings(
+                    model_name=model_name, model_kwargs={"device": "cpu"}
+                )
                 self.embedding_model.client = model
             except Exception as e:
                 print(f"Error loading HuggingFaceEmbeddings: {e}")

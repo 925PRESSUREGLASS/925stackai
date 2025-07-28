@@ -1,5 +1,6 @@
 langchain>=0.2.0
 langchain-openai
+langchain-huggingface
 langchain-community
 faiss-cpu
 unstructured
