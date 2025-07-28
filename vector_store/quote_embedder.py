@@ -45,11 +45,8 @@ class QuoteVectorStore:
             self.embedding_model = OpenAIEmbeddings()
         else:
             # Use langchain_huggingface for HuggingFaceEmbeddings (future-proof)
-            import sentence_transformers
             model_name = "all-MiniLM-L6-v2"
             try:
-                model = sentence_transformers.SentenceTransformer(model_name)
-                model.to("cpu")
                 self.embedding_model = HuggingFaceEmbeddings(model_name=model_name, model_kwargs={"device": "cpu"})
             except Exception as e:
                 print(f"Error loading HuggingFaceEmbeddings: {e}")

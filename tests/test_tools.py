@@ -11,3 +11,7 @@ def test_get_search_tool() -> None:
 def test_get_math_tool() -> None:
     tool = get_math_tool()
     assert isinstance(tool, Tool)
+
+    # Test actual math evaluation
+    result = tool.run("2 + 2")
+    assert result == "4", f"Expected '4', got {result}"

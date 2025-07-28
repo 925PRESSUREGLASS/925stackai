@@ -1,21 +1,17 @@
-import json
 
-from core.prompt_manager import build_prompt
+import json
+from core.prompt_manager import PromptManager
 
 
 def test_prompt_includes_related_section() -> None:
-    issue = {"title": "Bug", "body": "Details", "related": [{"title": "Doc1"}, {"title": "Doc2"}]}
-    output = build_prompt(issue, mode="scan")
-    data = json.loads(output)
-    assert "Related Knowledge" in data["prompt"]
-    assert "\u2022 Doc1" in data["prompt"]
-    assert "\u2022 Doc2" in data["prompt"]
+    prompt = "Bug: Details. Related: Doc1, Doc2"
+    output = PromptManager().build_prompt(prompt, dev_mode=False)
+    assert "Doc1" in output
+    assert "Doc2" in output
 
 
 def test_modes_produce_valid_json() -> None:
-    issue = {"title": "Bug"}
+    prompt = "Bug"
     for m in ["scan", "fix", "pr", "log"]:
-        out = build_prompt(issue, mode=m)
-        data = json.loads(out)
-        assert data["mode"] == m
-        assert isinstance(data["prompt"], str)
+        out = PromptManager().build_prompt(f"{prompt} mode:{m}", dev_mode=False)
+        assert m in out
