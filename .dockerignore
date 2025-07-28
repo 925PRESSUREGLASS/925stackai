@@ -1,0 +1,13 @@
+venv/
+__pycache__/
+*.pyc
+*.pkl
+*.faiss
+*.csv
+*.md
+.git/
+.gitignore
+.env
+*.log
+*.patch
+*.ipynb
