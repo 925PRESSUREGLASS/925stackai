@@ -5,10 +5,12 @@ from __future__ import annotations
 from langchain_core.tools import Tool
 
 
+import ast
+
 def _safe_eval(expression: str) -> str:
-    """Evaluate a math expression in a restricted namespace."""
+    """Safely evaluate a math expression using ast.literal_eval."""
     try:
-        result = eval(expression, {"__builtins__": {}})
+        result = ast.literal_eval(expression)
     except Exception as exc:  # pragma: no cover - error path
         return f"Error: {exc}"
     return str(result)

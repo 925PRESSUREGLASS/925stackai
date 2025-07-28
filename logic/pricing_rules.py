@@ -44,10 +44,8 @@ def calculate_price(scope: Dict[str, Any]) -> Dict[str, Any]:
     if service not in config:
         # Fallback: search memory for price per m2
         query = f"price per m2 {service}"
-        if hasattr(memory_search, "invoke"):
-            memory_result = memory_search.invoke(query)
-        else:
-            memory_result = memory_search(query)
+        # Assume memory_search implements an 'invoke' method as per protocol
+        memory_result = memory_search.invoke(query)
         return {
             "items": [],
             "surcharges": surcharges,

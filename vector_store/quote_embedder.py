@@ -4,7 +4,10 @@ import os
 from typing import Any, Dict, List, Optional
 
 from langchain_community.embeddings import HuggingFaceEmbeddings
-OpenAIEmbeddings = None
+try:
+    from langchain_community.embeddings import OpenAIEmbeddings
+except ImportError:
+    OpenAIEmbeddings = None
 
 import chromadb
 from chromadb.config import Settings

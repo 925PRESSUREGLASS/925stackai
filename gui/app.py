@@ -5,16 +5,12 @@ import sys
 from pathlib import Path
 
 
-# --- Robust import for utils.kb_loader regardless of working directory ---
-import importlib.util
-import sys
-from pathlib import Path
-kb_loader_path = Path(__file__).resolve().parent.parent / "utils" / "kb_loader.py"
-spec = importlib.util.spec_from_file_location("kb_loader", str(kb_loader_path))
-kb_loader = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(kb_loader)
-load_kb = kb_loader.load_kb
-search_kb = kb_loader.search_kb
+# --- Simplified import for utils.kb_loader ---
+project_root = Path(__file__).resolve().parent.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
+from utils.kb_loader import load_kb, search_kb
 
 import streamlit as st
 
