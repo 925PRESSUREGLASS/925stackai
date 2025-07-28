@@ -1,6 +1,6 @@
 import json
 
-from agents.quote_agent import run_quote
+from agents.quoting_agent import run_quote
 
 
 def test_quote_flow_window():
@@ -15,6 +15,7 @@ def test_quote_flow_window():
     assert data["total"] > 0
     assert data["items"][0]["subtotal"] > 0
     assert data["total"] > data["items"][0]["subtotal"]  # surcharge applied
+    assert data.get("intelligent_price") is not None
 
 
 def test_quote_flow_pressure():

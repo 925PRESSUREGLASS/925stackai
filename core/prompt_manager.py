@@ -1,5 +1,11 @@
 from __future__ import annotations
 
+try:
+    from agents.weblink_agent import query_related_knowledge
+except Exception:  # pragma: no cover - fallback when module missing
+    def query_related_knowledge(_: str) -> list[str]:
+        return []
+
 import json
 from typing import Any, Dict, Iterable
 
@@ -21,8 +27,8 @@ def build_prompt(issue: Dict[str, Any], *, mode: str = "scan", **_: Any) -> str:
         raise ValueError(f"Unsupported mode: {mode}")
 
     parts = [issue.get("title", ""), issue.get("body", "")]
-    related = issue.get("related")
+    related = query_related_knowledge(issue.get("description", ""))
     if related:
-        parts.append(_format_related(related))
+        parts.append("\n".join(["### Related Knowledge", *related]))
     prompt = "\n".join(p for p in parts if p)
     return json.dumps({"mode": mode, "prompt": prompt})

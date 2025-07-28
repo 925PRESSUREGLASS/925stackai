@@ -3,13 +3,18 @@ import json
 from core.prompt_manager import build_prompt
 
 
-def test_prompt_includes_related_section() -> None:
-    issue = {"title": "Bug", "body": "Details", "related": [{"title": "Doc1"}, {"title": "Doc2"}]}
+def test_prompt_includes_related_section(monkeypatch) -> None:
+    monkeypatch.setattr(
+        "agents.weblink_agent.query_related_knowledge",
+        lambda desc: ["Doc1", "Doc2"],
+        raising=False,
+    )
+    issue = {"title": "Bug", "body": "Details", "description": "some bug"}
     output = build_prompt(issue, mode="scan")
     data = json.loads(output)
     assert "Related Knowledge" in data["prompt"]
-    assert "\u2022 Doc1" in data["prompt"]
-    assert "\u2022 Doc2" in data["prompt"]
+    assert "Doc1" in data["prompt"]
+    assert "Doc2" in data["prompt"]
 
 
 def test_modes_produce_valid_json() -> None:
