@@ -2,10 +2,10 @@ import json
 import os
 from typing import Any, Dict, List, Optional
 
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 
 try:
-    from langchain.embeddings import OpenAIEmbeddings
+    from langchain_openai import OpenAIEmbeddings
 except ImportError:
     OpenAIEmbeddings = None
 # Removed redundant import of Optional
