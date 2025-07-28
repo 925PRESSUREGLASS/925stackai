@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from modular_ai_agent.tools.memory_tool import memory_search
+from modular_ai_agent.tools.math_tool import _safe_eval
 
 CONFIG_PATH = Path(__file__).parent.parent / "configs" / "pricing.json"
 
@@ -44,10 +45,8 @@ def calculate_price(scope: Dict[str, Any]) -> Dict[str, Any]:
     if service not in config:
         # Fallback: search memory for price per m2
         query = f"price per m2 {service}"
-        if hasattr(memory_search, "invoke"):
-            memory_result = memory_search.invoke(query)
-        else:
-            memory_result = memory_search(query)
+        # Assume memory_search implements an 'invoke' method as per protocol
+        memory_result = memory_search.invoke(query)
         return {
             "items": [],
             "surcharges": surcharges,
@@ -56,11 +55,27 @@ def calculate_price(scope: Dict[str, Any]) -> Dict[str, Any]:
         }
 
     base_price = config[service]["base_price"]
-    price = base_price * qty
+    # Support math expressions in base_price
+    if isinstance(base_price, str):
+        try:
+            base_price_eval = float(_safe_eval(base_price))
+        except Exception:
+            base_price_eval = 0.0
+    else:
+        base_price_eval = base_price
+    price = base_price_eval * qty
 
     # Apply size multiplier if applicable
     if size and "large_multiplier" in config[service] and size == "large":
-        price *= config[service]["large_multiplier"]
+        large_multiplier = config[service]["large_multiplier"]
+        if isinstance(large_multiplier, str):
+            try:
+                large_multiplier_eval = float(_safe_eval(large_multiplier))
+            except Exception:
+                large_multiplier_eval = 1.0
+        else:
+            large_multiplier_eval = large_multiplier
+        price *= large_multiplier_eval
 
     items.append(
         {
@@ -77,7 +92,12 @@ def calculate_price(scope: Dict[str, Any]) -> Dict[str, Any]:
     for key, value in (surcharges or {}).items():
         surcharge_cfg = config.get("surcharge", {}).get(key)
         if surcharge_cfg:
-            if isinstance(surcharge_cfg, (int, float)):
+            if isinstance(surcharge_cfg, str):
+                try:
+                    surcharge = float(_safe_eval(surcharge_cfg)) if value else 0
+                except Exception:
+                    surcharge = 0
+            elif isinstance(surcharge_cfg, (int, float)):
                 surcharge = surcharge_cfg if value else 0
             else:
                 surcharge = 0
